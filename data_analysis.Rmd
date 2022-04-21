@@ -19,6 +19,7 @@ census_api_key("ab0ed8418e6554d3eb77ed342784e3bb0b002a64")#, install=TRUE)
 census_data <- read_csv("census_incarceration.csv")
 ```
 
+#Clean Data
 ```{r}
 clean_counties <-census_data %>% 
   filter(state != "PR")
