@@ -21,8 +21,9 @@ census_data <- read_csv("census_incarceration.csv")
 
 ```{r}
 clean_counties <-census_data %>% 
-  filter(county)
+  filter(state != "PR")
 ```
+
 
 #Question 1: How do individual state incarceration rates compare to the national average?
 
