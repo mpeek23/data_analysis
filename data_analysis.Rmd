@@ -13,7 +13,6 @@ library(lubridate)
 census_api_key("ab0ed8418e6554d3eb77ed342784e3bb0b002a64")#, install=TRUE)
 ```
 
-
 #Loading Data
 ```{r}
 census_data <- read_csv("census_incarceration.csv")
@@ -38,6 +37,665 @@ clean_counties <-census_data %>%
 #Question 5: How does incarceration rates over the years compare to population rates?
 
 #Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
+
+```{r}
+#states
+alabama <- census_data %>% 
+  filter(state == 'AL')
+
+#no alaska
+
+arizona <- census_data %>% 
+  filter(state == 'AZ')
+
+arkansas <- census_data %>% 
+  filter(state == 'AR')
+
+california <- census_data %>% 
+  filter(state == 'CA')
+
+colorado <- census_data %>% 
+  filter(state == 'CO')
+
+connecticut <- census_data %>% 
+  filter(state == 'CT')
+
+delaware <- census_data %>% 
+  filter(state == 'DE')
+
+district_of_columbia <- census_data %>% 
+  filter(state == 'DC')
+
+florida <- census_data %>% 
+  filter(state == 'FL')
+
+georgia <- census_data %>% 
+  filter(state == 'GA')
+
+hawaii <- census_data %>% 
+  filter(state == 'HI')
+
+idaho <- census_data %>% 
+  filter(state == 'ID')
+
+illinois <- census_data %>% 
+  filter(state == 'IL')
+
+indiana <- census_data %>% 
+  filter(state == 'IN')
+
+iowa <- census_data %>% 
+  filter(state == 'IA')
+
+kansas <- census_data %>% 
+  filter(state == 'KS')
+
+kentucky <- census_data %>% 
+  filter(state == 'KY')
+
+louisiana <- census_data %>% 
+  filter(state == 'LA')
+
+maine <- census_data %>% 
+  filter(state == 'ME')
+
+maryland <- census_data %>% 
+  filter(state == 'MD')
+
+massachusetts <- census_data %>% 
+  filter(state == 'MS')
+
+michigan <- census_data %>% 
+  filter(state == 'MI')
+
+minnesota <- census_data %>% 
+  filter(state == 'MN')
+
+mississippi <- census_data %>% 
+  filter(state == 'MS')
+
+missouri <- census_data %>% 
+  filter(state == 'MO')
+
+montana <- census_data %>% 
+  filter(state == 'MT')
+
+nebraska <- census_data %>% 
+  filter(state == 'NE')
+
+nevada <- census_data %>% 
+  filter(state == 'NV')
+
+new_hampshire <- census_data %>% 
+  filter(state == 'NH')
+
+new_jersey <- census_data %>% 
+  filter(state == 'NJ')
+
+new_mexico <- census_data %>% 
+  filter(state == 'NM')
+
+new_york <- census_data %>% 
+  filter(state == 'NY')
+
+north_carolina <- census_data %>% 
+  filter(state == 'NC')
+
+north_dakota <- census_data %>% 
+  filter(state == 'ND')
+
+ohio <- census_data %>% 
+  filter(state == 'OH')
+
+oklahoma <- census_data %>% 
+  filter(state == 'OK')
+
+oregon <- census_data %>% 
+  filter(state == 'OR')
+
+pennsylvania <- census_data %>% 
+  filter(state == 'PA')
+
+rhode_island <- census_data %>% 
+  filter(state == 'RI')
+
+south_carolina <- census_data %>% 
+  filter(state == 'SC')
+
+south_dakota <- census_data %>% 
+  filter(state == 'SD')
+
+tennessee <- census_data %>% 
+  filter(state == 'TN')
+
+texas <- census_data %>% 
+  filter(state == 'TX')
+
+utah <- census_data %>% 
+  filter(state == 'UT')
+
+vermont <- census_data %>% 
+  filter(state == 'VT')
+
+virginia <- census_data %>% 
+  filter(state == 'VA')
+
+washington_state <- census_data %>% 
+  filter(state == 'WA')
+
+west_virginia <- census_data %>% 
+  filter(state == 'WV')
+
+wisconsin <- census_data %>% 
+  filter(state == 'WI')
+
+wyoming <- census_data %>% 
+  filter(state == 'WY')
+```
+
+```{r}
+#states totaled up
+alabama_totals <- alabama %>% 
+  summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00)
+  )
+
+#no alaska
+
+arizona_totals <- arizona %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+arkansas_totals <- arkansas %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+california_totals <- california %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+colorado_totals <- colorado %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+connecticut_totals <- connecticut %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+delaware_totals <- delaware %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+district_of_columbia_totals <- district_of_columbia %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+florida_totals <- florida %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+georgia_totals <- georgia %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+hawaii_totals <- hawaii %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+idaho_totals <- idaho %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+illinois_totals <- illinois %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+indiana_totals <- indiana %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+iowa_totals <- iowa %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+kansas_totals <- kansas %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+kentucky_totals <- kentucky %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+louisiana_totals <- louisiana %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+maine_totals <- maine %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+maryland_totals <- maryland %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+massachusetts_totals <- massachusetts %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+michigan_totals <- michigan %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+minnesota_totals <- minnesota %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+mississippi_totals <- mississippi %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+missouri_totals <- missouri %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+montana_totals <- montana %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+nebraska_totals <- nebraska %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+nevada_totals <- nevada %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+new_hampshire_totals <- new_hampshire %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+new_jersey_totals <- new_jersey %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+new_mexico_totals <- new_mexico %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+new_york_totals <- new_york %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+north_carolina_totals <- north_carolina %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+north_dakota_totals <- north_dakota %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+ohio_totals <- ohio %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+oklahoma_totals <- oklahoma %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+oregon_totals <- oregon %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+pennsylvania_totals <- pennsylvania %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+rhode_island_totals <- rhode_island %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+south_carolina_totals <- south_carolina %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+south_dakota_totals <- south_dakota %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+tennessee_totals <- tennessee %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+texas_totals <- texas %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+utah_totals <- utah %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+vermont_totals <- vermont %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+virginia_totals <- virginia %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+washington_state_totals <- washington_state %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+west_virginia_totals <- west_virginia %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+wisconsin_totals <- wisconsin %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+wyoming_totals <- wyoming %>% 
+summarise(
+    total_population_20 = sum(total_population_20),
+    incarcerated_20 = sum(incarcerated_20),
+    total_population_10 = sum(total_population_10),
+    incarcerated_10 = sum(incarcerated_10),
+    total_population_00 = sum(total_population_00),
+    incarcerated_00 = sum(incarcerated_00))
+
+
+```
+
 
 
 #Analysis of the data
