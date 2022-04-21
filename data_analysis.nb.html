@@ -239,56 +239,111 @@ census_api_key(&quot;ab0ed8418e6554d3eb77ed342784e3bb0b002a64&quot;)#, install=T
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xlYW5fY291bnRpZXMgPC1jZW5zdXNfZGF0YSAlPiUgXG4gIGZpbHRlcihzdGF0ZSAhPSBcIlBSXCIpXG5gYGAifQ== -->
-<pre class="r"><code>clean_counties &lt;-census_data %&gt;% 
-  filter(state != &quot;PR&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>#Question 1: How do individual state incarceration rates compare to the national average?</p>
-<p>#Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?</p>
-<p>#Question 3: Have any state’s average population increased while incarceration rates didn’t?</p>
-<p>#Question 4: Are there any counties driving a state’s incarceration rate?</p>
-<p>#Question 5: How does incarceration rates over the years compare to population rates?</p>
-<p>#Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?</p>
-<p>#Analysis of the data The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico’s municipios. I sorted and then saved everything that is not a county in the dataframe not_counties.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3JhcGhfb3Zlcl90aW1lPC1jZW5zdXNfZGF0YSAlPiUgXG4gIHBpdm90X2xvbmdlcihjb2xzID0gc3RhcnRzX3dpdGgoXCJpbmNhcmNlcmF0ZWRcIiksIG5hbWVzX3RvID0gXCJ5ZWFyXCIsIHZhbHVlc190byA9IFwibnVtYmVyXCIpICU+JSBcbiAgc2VsZWN0KHN0YXRlLCBjb3VudHksIHllYXIsIG51bWJlcikgJT4lIFxuICBtdXRhdGUoc2M9cGFzdGUwKHN0YXRlLGNvdW50eSkpICU+JVxuICBnZ3Bsb3QoKStcbiAgZ2VvbV9wb2ludChhZXMoeD15ZWFyLCB5PW51bWJlcikpK1xuICBnZW9tX2xpbmUoYWVzKHg9eWVhciwgeT1udW1iZXIsIGdyb3VwPXNjKSlcbmBgYCJ9 -->
-<pre class="r"><code>graph_over_time&lt;-census_data %&gt;% 
-  pivot_longer(cols = starts_with(&quot;incarcerated&quot;), names_to = &quot;year&quot;, values_to = &quot;number&quot;) %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZ3JhcGhfb3Zlcl90aW1lPC1jZW5zdXNfZGF0YSAlPiUgXG4gIHBpdm90X2xvbmdlcihjb2xzID0gc3RhcnRzX3dpdGgoXFxpbmNhcmNlcmF0ZWRcXCksIG5hbWVzX3RvID0gXFx5ZWFyXFwsIHZhbHVlc190byA9IFxcbnVtYmVyXFwpICU+JSBcbiAgc2VsZWN0KHN0YXRlLCBjb3VudHksIHllYXIsIG51bWJlcikgJT4lIFxuICBtdXRhdGUoc2M9cGFzdGUwKHN0YXRlLGNvdW50eSkpICU+JVxuICBnZ3Bsb3QoKStcbiAgZ2VvbV9wb2ludChhZXMoeD15ZWFyLCB5PW51bWJlcikpK1xuICBnZW9tX2xpbmUoYWVzKHg9eWVhciwgeT1udW1iZXIsIGdyb3VwPXNjKSlcbmBgYFxuYGBgIn0= -->
+<pre class="r"><code>```r
+graph_over_time&lt;-census_data %&gt;% 
+  pivot_longer(cols = starts_with(\incarcerated\), names_to = \year\, values_to = \number\) %&gt;% 
   select(state, county, year, number) %&gt;% 
   mutate(sc=paste0(state,county)) %&gt;%
   ggplot()+
   geom_point(aes(x=year, y=number))+
   geom_line(aes(x=year, y=number, group=sc))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdF9vdmVyX3RpbWU8LWNlbnN1c19kYXRhICU+JSBcbiAgcGl2b3RfbG9uZ2VyKGNvbHMgPSBzdGFydHNfd2l0aChcImluY2FyY2VyYXRlZFwiKSwgbmFtZXNfdG8gPSBcInllYXJcIiwgdmFsdWVzX3RvID0gXCJudW1iZXJcIikgJT4lIFxuICBzZWxlY3Qoc3RhdGUsIGNvdW50eSwgeWVhciwgbnVtYmVyKSAlPiUgZmlsdGVyKG51bWJlcjw2MDAwKSAlPiVcbiAgZ2dwbG90KGFlcyh4PW51bWJlcikpICsgZmFjZXRfd3JhcCh2YXJzKHllYXIpLG5jb2wgPSAyKSArXG4gIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMTAwKSAreWxhYihcIiMgb2YgY291bnRpZXNcIikgKyB4bGFiKFwibnVtYmVyIG9mIHBlb3BsZSBpbmNhcmNlcmF0ZWRcIilcbmhpc3Rfb3Zlcl90aW1lXG5cbmBgYCJ9 -->
-<pre class="r"><code>hist_over_time&lt;-census_data %&gt;% 
-  pivot_longer(cols = starts_with(&quot;incarcerated&quot;), names_to = &quot;year&quot;, values_to = &quot;number&quot;) %&gt;% 
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+sfsgs
+
+#Question 1: How do individual state incarceration rates compare to the national average?
+
+#Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
+
+#Question 3: Have any state’s average population increased while incarceration rates didn&#39;t?
+
+#Question 4: Are there any counties driving a state&#39;s incarceration rate?
+
+#Question 5: How does incarceration rates over the years compare to population rates?
+
+#Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
+
+
+#Analysis of the data
+The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico&#39;s municipios. I sorted and then saved everything that is not a county in the dataframe not_counties. 
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuaGlzdF9vdmVyX3RpbWU8LWNlbnN1c19kYXRhICU+JSBcbiAgcGl2b3RfbG9uZ2VyKGNvbHMgPSBzdGFydHNfd2l0aChcXGluY2FyY2VyYXRlZFxcKSwgbmFtZXNfdG8gPSBcXHllYXJcXCwgdmFsdWVzX3RvID0gXFxudW1iZXJcXCkgJT4lIFxuICBzZWxlY3Qoc3RhdGUsIGNvdW50eSwgeWVhciwgbnVtYmVyKSAlPiUgZmlsdGVyKG51bWJlcjw2MDAwKSAlPiVcbiAgZ2dwbG90KGFlcyh4PW51bWJlcikpICsgZmFjZXRfd3JhcCh2YXJzKHllYXIpLG5jb2wgPSAyKSArXG4gIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMTAwKSAreWxhYihcXCMgb2YgY291bnRpZXNcXCkgKyB4bGFiKFxcbnVtYmVyIG9mIHBlb3BsZSBpbmNhcmNlcmF0ZWRcXClcbmhpc3Rfb3Zlcl90aW1lXG5cbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+hist_over_time&lt;-census_data %&gt;% 
+  pivot_longer(cols = starts_with(\incarcerated\), names_to = \year\, values_to = \number\) %&gt;% 
   select(state, county, year, number) %&gt;% filter(number&lt;6000) %&gt;%
   ggplot(aes(x=number)) + facet_wrap(vars(year),ncol = 2) +
-  geom_histogram(binwidth = 100) +ylab(&quot;# of counties&quot;) + xlab(&quot;number of people incarcerated&quot;)
+  geom_histogram(binwidth = 100) +ylab(\# of counties\) + xlab(\number of people incarcerated\)
 hist_over_time
 </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubm90X2NvdW50aWVzIDwtY2Vuc3VzX2RhdGEgJT4lIFxuICBmaWx0ZXIoIWdyZXBsKFwiQ291bnR5XFxcXHMqJFwiLGNvdW50eSkpXG5gYGAifQ== -->
-<pre class="r"><code>not_counties &lt;-census_data %&gt;% 
-  filter(!grepl(&quot;County\\s*$&quot;,county))</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubm90X2NvdW50aWVzIDwtY2Vuc3VzX2RhdGEgJT4lIFxuICBmaWx0ZXIoIWdyZXBsKFxcQ291bnR5XFxcXHMqJFxcLGNvdW50eSkpXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+not_counties &lt;-census_data %&gt;% 
+  filter(!grepl(\County\\s*$\,county))</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubm90X2NvdW50aWVzIDwtY2Vuc3VzX2RhdGEgJT4lIFxuICBmaWx0ZXIoIWdyZXBsKFxcQ291bnR5XFxcXHMqJFxcLGNvdW50eSkpXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+not_counties &lt;-census_data %&gt;% 
+  filter(!grepl(\County\\s*$\,county))</code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiZGF0YV9hbmFseXNpc19wcm9qZWN0IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiNMb2FkaW5nIExpYnJhcmllcwpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoc2YpCmxpYnJhcnkoamFuaXRvcikKbGlicmFyeSh0aWR5Y2Vuc3VzKQpsaWJyYXJ5KHRpZ3JpcykKbGlicmFyeShsdWJyaWRhdGUpCmNlbnN1c19hcGlfa2V5KCJhYjBlZDg0MThlNjU1NGQzZWI3N2VkMzQyNzg0ZTNiYjBiMDAyYTY0IikjLCBpbnN0YWxsPVRSVUUpCmBgYAoKCiNMb2FkaW5nIERhdGEKYGBge3J9CmNlbnN1c19kYXRhIDwtIHJlYWRfY3N2KCJjZW5zdXNfaW5jYXJjZXJhdGlvbi5jc3YiKQpgYGAKCmBgYHtyfQpjbGVhbl9jb3VudGllcyA8LWNlbnN1c19kYXRhICU+JSAKICBmaWx0ZXIoc3RhdGUgIT0gIlBSIikKYGBgCgojUXVlc3Rpb24gMTogSG93IGRvIGluZGl2aWR1YWwgc3RhdGUgaW5jYXJjZXJhdGlvbiByYXRlcyBjb21wYXJlIHRvIHRoZSBuYXRpb25hbCBhdmVyYWdlPwoKI1F1ZXN0aW9uIDI6IEFyZSB0aGVyZSBhbnkgc3RhdGVzIGNvbnNpc3RlbnRseSBiZWxvdyB0aGUgbmF0aW9uYWwgYXZlcmFnZSwgcG9zc2libHkgZHJhZ2dpbmcgaXQgZG93biBlYWNoIHllYXI/IEFyZSB0aGVyZSBhbnkgc3RhdGVzIGNvbnNpc3RlbnRseSBhYm92ZSB0aGUgbmF0aW9uYWwgYXZlcmFnZT8KCiNRdWVzdGlvbiAzOiBIYXZlIGFueSBzdGF0ZeKAmXMgYXZlcmFnZSBwb3B1bGF0aW9uIGluY3JlYXNlZCB3aGlsZSBpbmNhcmNlcmF0aW9uIHJhdGVzIGRpZG4ndD8KCiNRdWVzdGlvbiA0OiBBcmUgdGhlcmUgYW55IGNvdW50aWVzIGRyaXZpbmcgYSBzdGF0ZSdzIGluY2FyY2VyYXRpb24gcmF0ZT8KCiNRdWVzdGlvbiA1OiBIb3cgZG9lcyBpbmNhcmNlcmF0aW9uIHJhdGVzIG92ZXIgdGhlIHllYXJzIGNvbXBhcmUgdG8gcG9wdWxhdGlvbiByYXRlcz8KCiNRdWVzdGlvbiA2OiBXaHkgZG8gc29tZSBjb3VudGllcyBoYXZlIHplcm8gcGVvcGxlIGluY2FyY2VyYXRlZCBhbmQgZG8gd2UgdGhpbmsgaXTigJlzIGFjY3VyYXRlPwoKCiNBbmFseXNpcyBvZiB0aGUgZGF0YQpUaGUgZGF0YSBoYXMgMywyMTEgcm93cyBhbmQgOSBjb2x1bW5zLiBFYWNoIGNvdW50eSBmb3IgZXZlcnkgc3RhdGUgaGFzIHRoZSB0b3RhbCBwb3B1bGF0aW9uIGFuZCBpbmNhcmNlcmF0ZWQgcG9wdWxhdGlvbiBmb3IgMjAyMCwgMjAxMCBhbmQgMjAwMCwgYW5kIGl0cyBGSVBTIGNvZGUuIE9uZSBpc3N1ZSB3ZSBtYXkgcnVuIGludG8gaXMgaWYgdGhlIGluZm9ybWF0aW9uIGlzIG5vdCBhY2N1cmF0ZS4gRm9yIGV4YW1wbGUsIE5hbnR1Y2tldCBDb3VudHkgTUEsIG5ldmVyIGhhcyBhbnlvbmUgaW5jYXJjZXJhdGVkIG92ZXIgdGhlIDIwIHllYXJzIHdlIGFyZSBsb29raW5nIGF0LiBJIGZpbmQgdGhhdCBzdXNwaWNpb3VzLiBOb3Qgb25seSB0aGF0LCBhIGxvdCBvZiBjb3VudGllcyBoYXZlIHRoZSBzYW1lIGlzc3VlLiBJbiBhZGRpdGlvbiwgb24gb3VyIGRhdGEgd2UgaGF2ZSAzMjExIHJvd3MgZGVzY3JpYmluZyBjb3VudGllcy4gSW4gdGhlIFVTIHRoZXJlIGFyZSBhYm91dCAzMDA2IGNvdW50aWVzLiBUaGUgcmVhc29uIHdlIGhhdmUgbW9yZSBpcyBiZWNhdXNlIG91ciBkYXRhIGluY2x1ZGVzIFBhcmlzaGVzICh3aGljaCBhcmUgY291bnRpZXMgaW4gTEEpLCBib3JvdWdocywgc29tZSBiaWcgY2l0aWVzLCBQdWVydG8gUmljbydzIG11bmljaXBpb3MuIEkgc29ydGVkIGFuZCB0aGVuIHNhdmVkIGV2ZXJ5dGhpbmcgdGhhdCBpcyBub3QgYSBjb3VudHkgaW4gdGhlIGRhdGFmcmFtZSBub3RfY291bnRpZXMuIAoKYGBge3J9CmdyYXBoX292ZXJfdGltZTwtY2Vuc3VzX2RhdGEgJT4lIAogIHBpdm90X2xvbmdlcihjb2xzID0gc3RhcnRzX3dpdGgoImluY2FyY2VyYXRlZCIpLCBuYW1lc190byA9ICJ5ZWFyIiwgdmFsdWVzX3RvID0gIm51bWJlciIpICU+JSAKICBzZWxlY3Qoc3RhdGUsIGNvdW50eSwgeWVhciwgbnVtYmVyKSAlPiUgCiAgbXV0YXRlKHNjPXBhc3RlMChzdGF0ZSxjb3VudHkpKSAlPiUKICBnZ3Bsb3QoKSsKICBnZW9tX3BvaW50KGFlcyh4PXllYXIsIHk9bnVtYmVyKSkrCiAgZ2VvbV9saW5lKGFlcyh4PXllYXIsIHk9bnVtYmVyLCBncm91cD1zYykpCmBgYAoKYGBge3J9Cmhpc3Rfb3Zlcl90aW1lPC1jZW5zdXNfZGF0YSAlPiUgCiAgcGl2b3RfbG9uZ2VyKGNvbHMgPSBzdGFydHNfd2l0aCgiaW5jYXJjZXJhdGVkIiksIG5hbWVzX3RvID0gInllYXIiLCB2YWx1ZXNfdG8gPSAibnVtYmVyIikgJT4lIAogIHNlbGVjdChzdGF0ZSwgY291bnR5LCB5ZWFyLCBudW1iZXIpICU+JSBmaWx0ZXIobnVtYmVyPDYwMDApICU+JQogIGdncGxvdChhZXMoeD1udW1iZXIpKSArIGZhY2V0X3dyYXAodmFycyh5ZWFyKSxuY29sID0gMikgKwogIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMTAwKSAreWxhYigiIyBvZiBjb3VudGllcyIpICsgeGxhYigibnVtYmVyIG9mIHBlb3BsZSBpbmNhcmNlcmF0ZWQiKQpoaXN0X292ZXJfdGltZQoKYGBgCgoKYGBge3J9Cm5vdF9jb3VudGllcyA8LWNlbnN1c19kYXRhICU+JSAKICBmaWx0ZXIoIWdyZXBsKCJDb3VudHlcXHMqJCIsY291bnR5KSkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiZGF0YV9hbmFseXNpc19wcm9qZWN0IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiNMb2FkaW5nIExpYnJhcmllcwpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoc2YpCmxpYnJhcnkoamFuaXRvcikKbGlicmFyeSh0aWR5Y2Vuc3VzKQpsaWJyYXJ5KHRpZ3JpcykKbGlicmFyeShsdWJyaWRhdGUpCmNlbnN1c19hcGlfa2V5KCJhYjBlZDg0MThlNjU1NGQzZWI3N2VkMzQyNzg0ZTNiYjBiMDAyYTY0IikjLCBpbnN0YWxsPVRSVUUpCmBgYAoKCiNMb2FkaW5nIERhdGEKYGBge3J9CmNlbnN1c19kYXRhIDwtIHJlYWRfY3N2KCJjZW5zdXNfaW5jYXJjZXJhdGlvbi5jc3YiKQpgYGAKCmBgYHtyfQpjbGVhbl9jb3VudGllcyA8LWNlbnN1c19kYXRhICU+JSAKICBmaWx0ZXIoY291bnR5KQoKYGBgCnNmc2dzCgojUXVlc3Rpb24gMTogSG93IGRvIGluZGl2aWR1YWwgc3RhdGUgaW5jYXJjZXJhdGlvbiByYXRlcyBjb21wYXJlIHRvIHRoZSBuYXRpb25hbCBhdmVyYWdlPwoKI1F1ZXN0aW9uIDI6IEFyZSB0aGVyZSBhbnkgc3RhdGVzIGNvbnNpc3RlbnRseSBiZWxvdyB0aGUgbmF0aW9uYWwgYXZlcmFnZSwgcG9zc2libHkgZHJhZ2dpbmcgaXQgZG93biBlYWNoIHllYXI/IEFyZSB0aGVyZSBhbnkgc3RhdGVzIGNvbnNpc3RlbnRseSBhYm92ZSB0aGUgbmF0aW9uYWwgYXZlcmFnZT8KCiNRdWVzdGlvbiAzOiBIYXZlIGFueSBzdGF0ZeKAmXMgYXZlcmFnZSBwb3B1bGF0aW9uIGluY3JlYXNlZCB3aGlsZSBpbmNhcmNlcmF0aW9uIHJhdGVzIGRpZG4ndD8KCiNRdWVzdGlvbiA0OiBBcmUgdGhlcmUgYW55IGNvdW50aWVzIGRyaXZpbmcgYSBzdGF0ZSdzIGluY2FyY2VyYXRpb24gcmF0ZT8KCiNRdWVzdGlvbiA1OiBIb3cgZG9lcyBpbmNhcmNlcmF0aW9uIHJhdGVzIG92ZXIgdGhlIHllYXJzIGNvbXBhcmUgdG8gcG9wdWxhdGlvbiByYXRlcz8KCiNRdWVzdGlvbiA2OiBXaHkgZG8gc29tZSBjb3VudGllcyBoYXZlIHplcm8gcGVvcGxlIGluY2FyY2VyYXRlZCBhbmQgZG8gd2UgdGhpbmsgaXTigJlzIGFjY3VyYXRlPwoKCiNBbmFseXNpcyBvZiB0aGUgZGF0YQpUaGUgZGF0YSBoYXMgMywyMTEgcm93cyBhbmQgOSBjb2x1bW5zLiBFYWNoIGNvdW50eSBmb3IgZXZlcnkgc3RhdGUgaGFzIHRoZSB0b3RhbCBwb3B1bGF0aW9uIGFuZCBpbmNhcmNlcmF0ZWQgcG9wdWxhdGlvbiBmb3IgMjAyMCwgMjAxMCBhbmQgMjAwMCwgYW5kIGl0cyBGSVBTIGNvZGUuIE9uZSBpc3N1ZSB3ZSBtYXkgcnVuIGludG8gaXMgaWYgdGhlIGluZm9ybWF0aW9uIGlzIG5vdCBhY2N1cmF0ZS4gRm9yIGV4YW1wbGUsIE5hbnR1Y2tldCBDb3VudHkgTUEsIG5ldmVyIGhhcyBhbnlvbmUgaW5jYXJjZXJhdGVkIG92ZXIgdGhlIDIwIHllYXJzIHdlIGFyZSBsb29raW5nIGF0LiBJIGZpbmQgdGhhdCBzdXNwaWNpb3VzLiBOb3Qgb25seSB0aGF0LCBhIGxvdCBvZiBjb3VudGllcyBoYXZlIHRoZSBzYW1lIGlzc3VlLiBJbiBhZGRpdGlvbiwgb24gb3VyIGRhdGEgd2UgaGF2ZSAzMjExIHJvd3MgZGVzY3JpYmluZyBjb3VudGllcy4gSW4gdGhlIFVTIHRoZXJlIGFyZSBhYm91dCAzMDA2IGNvdW50aWVzLiBUaGUgcmVhc29uIHdlIGhhdmUgbW9yZSBpcyBiZWNhdXNlIG91ciBkYXRhIGluY2x1ZGVzIFBhcmlzaGVzICh3aGljaCBhcmUgY291bnRpZXMgaW4gTEEpLCBib3JvdWdocywgc29tZSBiaWcgY2l0aWVzLCBQdWVydG8gUmljbydzIG11bmljaXBpb3MuIEkgc29ydGVkIGFuZCB0aGVuIHNhdmVkIGV2ZXJ5dGhpbmcgdGhhdCBpcyBub3QgYSBjb3VudHkgaW4gdGhlIGRhdGFmcmFtZSBub3RfY291bnRpZXMuIAoKYGBge3J9CmdyYXBoX292ZXJfdGltZTwtY2Vuc3VzX2RhdGEgJT4lIAogIHBpdm90X2xvbmdlcihjb2xzID0gc3RhcnRzX3dpdGgoImluY2FyY2VyYXRlZCIpLCBuYW1lc190byA9ICJ5ZWFyIiwgdmFsdWVzX3RvID0gIm51bWJlciIpICU+JSAKICBzZWxlY3Qoc3RhdGUsIGNvdW50eSwgeWVhciwgbnVtYmVyKSAlPiUgCiAgbXV0YXRlKHNjPXBhc3RlMChzdGF0ZSxjb3VudHkpKSAlPiUKICBnZ3Bsb3QoKSsKICBnZW9tX3BvaW50KGFlcyh4PXllYXIsIHk9bnVtYmVyKSkrCiAgZ2VvbV9saW5lKGFlcyh4PXllYXIsIHk9bnVtYmVyLCBncm91cD1zYykpCmBgYAoKYGBge3J9Cmhpc3Rfb3Zlcl90aW1lPC1jZW5zdXNfZGF0YSAlPiUgCiAgcGl2b3RfbG9uZ2VyKGNvbHMgPSBzdGFydHNfd2l0aCgiaW5jYXJjZXJhdGVkIiksIG5hbWVzX3RvID0gInllYXIiLCB2YWx1ZXNfdG8gPSAibnVtYmVyIikgJT4lIAogIHNlbGVjdChzdGF0ZSwgY291bnR5LCB5ZWFyLCBudW1iZXIpICU+JSBmaWx0ZXIobnVtYmVyPDYwMDApICU+JQogIGdncGxvdChhZXMoeD1udW1iZXIpKSArIGZhY2V0X3dyYXAodmFycyh5ZWFyKSxuY29sID0gMikgKwogIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMTAwKSAreWxhYigiIyBvZiBjb3VudGllcyIpICsgeGxhYigibnVtYmVyIG9mIHBlb3BsZSBpbmNhcmNlcmF0ZWQiKQpoaXN0X292ZXJfdGltZQoKYGBgCgoKYGBge3J9Cm5vdF9jb3VudGllcyA8LWNlbnN1c19kYXRhICU+JSAKICBmaWx0ZXIoIWdyZXBsKCJDb3VudHlcXHMqJCIsY291bnR5KSkKYGBgCgo=</div>
 
 
 
