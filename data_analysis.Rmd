@@ -22,7 +22,8 @@ census_data <- read_csv("census_incarceration.csv")
 #Clean Data
 ```{r}
 clean_counties <-census_data %>% 
-  filter(state != "PR") 
+  filter(state != "PR") %>%
+  filter(state != "AK")
 ```
 
 
