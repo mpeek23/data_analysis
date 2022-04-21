@@ -1,0 +1,79 @@
+---
+title: "data_analysis_project"
+output: html_notebook
+---
+#Loading Libraries
+```{r}
+library(tidyverse)
+library(sf)
+library(janitor)
+library(tidycensus)
+library(tigris)
+library(lubridate)
+census_api_key("ab0ed8418e6554d3eb77ed342784e3bb0b002a64")#, install=TRUE)
+```
+
+
+#Loading Data
+```{r}
+census_data <- read_csv("census_incarceration.csv")
+```
+
+```{r}
+clean_counties <-census_data %>% 
+  filter(county)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The data doesn't seem to need any cleaning. Will re-evaluate as we do more explanation, but all the numbers, titles, and labels seem explanatory and consistent.
+
+#Analysis of the data
+The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico's municipios. I sorted and then saved everything that is not a county in the dataframe not_counties. 
+
+```{r}
+graph_over_time<-census_data %>% 
+  pivot_longer(cols = starts_with("incarcerated"), names_to = "year", values_to = "number") %>% 
+  select(state, county, year, number) %>% 
+  mutate(sc=paste0(state,county)) %>%
+  ggplot()+
+  geom_point(aes(x=year, y=number))+
+  geom_line(aes(x=year, y=number, group=sc))
+```
+
+```{r}
+hist_over_time<-census_data %>% 
+  pivot_longer(cols = starts_with("incarcerated"), names_to = "year", values_to = "number") %>% 
+  select(state, county, year, number) %>% filter(number<6000) %>%
+  ggplot(aes(x=number)) + facet_wrap(vars(year),ncol = 2) +
+  geom_histogram(binwidth = 100) +ylab("# of counties") + xlab("number of people incarcerated")
+hist_over_time
+
+```
+
+
+```{r}
+not_counties <-census_data %>% 
+  filter(!grepl("County\\s*$",county))
+```
+
