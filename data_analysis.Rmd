@@ -48,8 +48,7 @@ incarcerated_pop_00 <- clean_counties %>%
   mutate(rate_00 = 1972432/280771920 *100)
 ```
 ```{r}
-ggplot() +
-  
+rates <- cbind(incarcerated_pop_00, incarcerated_pop_10, incarcerated_pop_20)
 ```
 #Question 1: How do individual state incarceration rates compare to the national average?
 
