@@ -25,7 +25,32 @@ clean_counties <-census_data %>%
   filter(state != "AK")
 ```
 
-
+#National Rates
+```{r}
+incarcerated_pop_20 <- clean_counties %>%
+  summarise(
+    sum(incarcerated_20),
+    sum(total_population_20)) %>% 
+  mutate(rate_20 = 1962129/330628106 *100)
+```
+```{r}
+incarcerated_pop_10 <- clean_counties %>%
+  summarise(
+    sum(incarcerated_10),
+    sum(total_population_10)) %>% 
+  mutate(rate_10 = 2259231/307959610 *100)
+```
+```{r}
+incarcerated_pop_00 <- clean_counties %>%
+  summarise(
+    sum(incarcerated_00),
+    sum(total_population_00)) %>% 
+  mutate(rate_00 = 1972432/280771920 *100)
+```
+```{r}
+ggplot() +
+  
+```
 #Question 1: How do individual state incarceration rates compare to the national average?
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
@@ -695,8 +720,6 @@ summarise(
 
 
 ```
-
-
 
 #Analysis of the data
 The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico's municipios. I sorted and then saved everything that is not a county in the dataframe not_counties. 
