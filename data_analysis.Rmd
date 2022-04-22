@@ -50,6 +50,7 @@ incarcerated_pop_00 <- clean_counties %>%
 ```{r}
 rates <- cbind(incarcerated_pop_00, incarcerated_pop_10, incarcerated_pop_20)
 ```
+
 #Question 1: How do individual state incarceration rates compare to the national average?
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
