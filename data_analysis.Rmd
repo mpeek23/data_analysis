@@ -31,7 +31,10 @@ rates <- clean_counties %>%
     state= "US",
     rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
     rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
-    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100,
+    rank_20 = NA,
+    rank_10 = NA,
+    rank_00 = NA
              ) 
 ```
 
@@ -50,14 +53,28 @@ There are 22 states that are above the national average incarceration rates, whi
 
 #Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
 
+
+
+#Other Notes
+Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving these higher incarceration rates? Could it be that 20 years ago West Virginia was a democratic state? We can tell that over time the consistently high incarceration states are states run by Republicans? Is there a reason for this from certain laws? In 2000, West Virginia narrowly supported George Bush over Al Gore but that was the turning point, before that their electoral votes were for Democrats. After 2000, they're one of the most Republican states. If you look at Georgia, which voted Democrat for president the first time since 1992 (for Bill Clinton), has been falling in the ranks of incarceration rates since 2000. They've dropped from 3 to 7 over 20 years. 
+
+Over the past 20 years, Louisiana has been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st. 
+
+Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). 
+
 ```{r}
 state_rates <-clean_counties %>% 
   group_by(state) %>% 
   summarise(
     rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
     rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
-    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>% 
-  bind_rows(rates) %>% 
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>%
+  mutate(
+    rank_20 = min_rank(-rate_20),
+    rank_10 = min_rank(-rate_10),
+    rank_00 = min_rank(-rate_00)) %>% 
+  bind_rows(rates) %>%
+  arrange(desc(rate_20))
 ```
 
 ```{r}
