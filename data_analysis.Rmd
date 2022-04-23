@@ -21,37 +21,24 @@ census_data <- read_csv("census_incarceration.csv")
 #Clean Data
 ```{r}
 clean_counties <-census_data %>% 
-  filter(state != "PR") %>%
-  filter(state != "AK")
+  filter(state != "PR", state != "AK")
 ```
 
 #National Rates
 ```{r}
-incarcerated_pop_20 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_20),
-    sum(total_population_20)) %>% 
-  mutate(rate_20 = 1962129/330628106 *100)
-```
-```{r}
-incarcerated_pop_10 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_10),
-    sum(total_population_10)) %>% 
-  mutate(rate_10 = 2259231/307959610 *100)
-```
-```{r}
-incarcerated_pop_00 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_00),
-    sum(total_population_00)) %>% 
-  mutate(rate_00 = 1972432/280771920 *100)
-```
-```{r}
-rates <- cbind(incarcerated_pop_00, incarcerated_pop_10, incarcerated_pop_20)
+rates <- clean_counties %>%
+  summarise( 
+    state= "US",
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100
+             ) 
 ```
 
+
+
 #Question 1: How do individual state incarceration rates compare to the national average?
+There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states so half of 49 is 24.5 which is just slightly above 22. This also tells me that there are states pulling the the national rate up because the average is above the median of the states.
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
 
@@ -62,6 +49,24 @@ rates <- cbind(incarcerated_pop_00, incarcerated_pop_10, incarcerated_pop_20)
 #Question 5: How does incarceration rates over the years compare to population rates?
 
 #Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
+
+```{r}
+state_rates <-clean_counties %>% 
+  group_by(state) %>% 
+  summarise(
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>% 
+  bind_rows(rates) %>% 
+```
+
+```{r}
+state_rates %>% 
+  ggplot(aes(rate_20))+ geom_histogram(bins = 20)+geom_vline(xintercept = rates$rate_20) +
+  geom_label(aes(y=8,label=state))
+ 
+```
+
 
 ```{r}
 #states
