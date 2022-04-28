@@ -44,7 +44,7 @@ rates <- clean_counties %>%
 There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states so half of 49 is 24.5 which is just slightly above 22. This also tells me that there are states pulling the the national rate up because the average is above the median of the states.
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
-Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving these higher incarceration rates? Could it be that 20 years ago West Virginia was a democratic state? We can tell that over time the consistently high incarceration states are states run by Republicans? Is there a reason for this from certain laws? In 2000, West Virginia narrowly supported George Bush over Al Gore but that was the turning point, before that their electoral votes were for Democrats. After 2000, they're one of the most Republican states. If you look at Georgia, which voted Democrat for president the first time since 1992 (for Bill Clinton), has been falling in the ranks of incarceration rates since 2000. They've dropped from 3 to 7 over 20 years. 
+Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving these higher incarceration rates? Could it be that 20 years ago West Virginia was a democratic state? We can tell that over time the consistently high incarceration states are states run by Republicans? Is there a reason for this from certain laws? In 2000, West Virginia narrowly supported George Bush over Al Gore but that was the turning point, before that their electoral votes were for Democrats. After 2000, they're one of the most Republican states. If you look at Georgia, which voted Democrat for president in 2020 for the first time since 1992 (for Bill Clinton), has been falling in the ranks of incarceration rates since 2000. They've dropped from 3 to 7 over 20 years. 
 
 Over the past 20 years, Louisiana has been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st. 
 
@@ -78,6 +78,8 @@ After a little bit of research, Nantucket, which is one of the counties that rep
 
 
 #Other Notes
+
+Prisons and the census - https://www.prisonersofthecensus.org/faq.html#:~:text=A%3A%20The%20Census%20justifies%20counting,special%20populations%20in%20the%20past.
 
 
 ```{r}
