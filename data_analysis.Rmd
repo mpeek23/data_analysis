@@ -81,6 +81,11 @@ After a little bit of research, Nantucket, which is one of the counties that rep
 
 Prisons and the census - https://www.prisonersofthecensus.org/faq.html#:~:text=A%3A%20The%20Census%20justifies%20counting,special%20populations%20in%20the%20past.
 
+Look up:
+Laws that have increased prison populations in Republican states
+
+
+
 
 ```{r}
 state_rates <-clean_counties %>% 
