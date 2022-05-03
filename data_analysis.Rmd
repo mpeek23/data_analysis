@@ -21,47 +21,171 @@ census_data <- read_csv("census_incarceration.csv")
 #Clean Data
 ```{r}
 clean_counties <-census_data %>% 
-  filter(state != "PR") %>%
-  filter(state != "AK")
+  filter(state != "PR", state != "AK")
 ```
 
 #National Rates
 ```{r}
-incarcerated_pop_20 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_20),
-    sum(total_population_20)) %>% 
-  mutate(rate_20 = 1962129/330628106 *100)
+rates <- clean_counties %>%
+  summarise( 
+    state= "US",
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100,
+    rank_20 = NA,
+    rank_10 = NA,
+    rank_00 = NA
+             ) 
 ```
-```{r}
-incarcerated_pop_10 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_10),
-    sum(total_population_10)) %>% 
-  mutate(rate_10 = 2259231/307959610 *100)
-```
-```{r}
-incarcerated_pop_00 <- clean_counties %>%
-  summarise(
-    sum(incarcerated_00),
-    sum(total_population_00)) %>% 
-  mutate(rate_00 = 1972432/280771920 *100)
-```
-```{r}
-rates <- cbind(incarcerated_pop_00, incarcerated_pop_10, incarcerated_pop_20)
-```
+
+#Background on incarceration rates in the US:
+If each state was its own country, 31 US states would rank highest in the world ahead of another country’s prisoner population, El Salvador being the first non-US state or country to rank in the top 33. Even Massachusetts, the state with the lowest incarceration rate, would rank 9th as a country in the world. “Many of the countries that rank alongside the least punitive U.S. states, such as Turkmenistan, Thailand, Rwanda, and Russia, have authoritarian governments or have recently experienced large-scale internal armed conflicts. Others struggle with violent crime on a scale far beyond that in the U.S.: El Salvador, Russia, Panama, Costa Rica, and Brazil all have murder rates more than double that of the U.S. Yet the U.S., “land of the free,” tops them all.”
+
+For four decades, the US made various policy decisions to make criminal justice and law enforcement more punitive. The end result is 70% of convictions ending in confinement, far more than other developed nations with similar crime rates.
+
+Just under one-quarter of the world's prisoners are held in American prisons. - (https://nap.nationalacademies.org/read/18613/chapter/5)
+
 
 #Question 1: How do individual state incarceration rates compare to the national average?
+There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states so half of 49 is 24.5 which is just slightly above 22. This also tells me that there are states pulling the the national rate up because the average is above the median of the states.
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
+Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving these higher incarceration rates? Could it be that 20 years ago West Virginia was a democratic state? We can tell that over time the consistently high incarceration states are states run by Republicans? Is there a reason for this from certain laws? In 2000, West Virginia narrowly supported George Bush over Al Gore but that was the turning point, before that their electoral votes were for Democrats. After 2000, they're one of the most Republican states. If you look at Georgia, which voted Democrat for president in 2020 for the first time since 1992 (for Bill Clinton), has been falling in the ranks of incarceration rates since 2000. They've dropped from 3 to 7 over 20 years. 
+
+Over the past 20 years, Louisiana has been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st. 
+
+Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because thats where it's cheaper to build prisons)?  
+
+***abby make a chart of the ranks datawrapper****
+
+#Background on Republican States
+
+According to https://felonvoting.procon.org/state-felon-voting-laws/: 
+
+-Places where voting can be lost forever after a felon gets out of prison: all Republican states except for Delaware.
+
+-Places where voting is restored only after prisons, parole and probation: Mostly Republican states except for New Mexico, Minnesota, Wisconsin and (newly Democratic) Georgia.
+
+-Places where voting rights are restored after a felon is released from prison: Mostly Democratic states except for Utah, Montana, North Dakota, Indiana, Ohio, and North Carolina
+
+-Places where felons can vote from prison: All Democratic states and DC
+
+Since incarceration rates disproportionally affect Black and Brown men, who historically vote Democrat, one could surmise that incarceration rates might be a tool for voter suppression. With Republican states growing in incarceration population over the last 20 years as more punitive criminal justice measures have been inacted, this has greatly affected the number of voters in each state, mostly Republican states. 
+
+From a paper published by SSC.WISC.EDU, https://www.ssc.wisc.edu/~oliver/wp/wp-content/uploads/2015/12/Oliver2011Political-FactorsIStateIncarceration.pdf : 
+
+“Since 1968, Republican presidential candidates have pursued the "Southern strategy" of campaigning against crime, characterizing Democrats as "soft on crime" and relying on racially-coded references to welfare and crime. There are also strong racial patterns in presidential voting since 1968, with Blacks voting overwhelmingly Democratic and Whites typically giving an edge to Republicans. These patterns lead to general expectations among
+both the general public and sociologists that more punitive policies will be associated with times and places where Republicans are in power.”
+
+“At the aggregate national level, the racial disparity in imprisonment rose steeply at the end of the 1980s during a Republican presidency and began to decline after 1995, during the Clinton presidency.”
+
+That said, incarceration rates nationwide continued to climb steadily for 14 years after the passage of the 1994 Crime Bill. By the time of the passage, every state in the nation had passed at least one mandatory minimum law, and the 94 Crime Bill encouraged even more punitive laws and harsher practices on the ground, including by prosecutors and police, to lock up more people and for longer periods of time. This platform remained largely in place until 12 years later, when in 2008, the tone and substance began to change under new leadership in the party.
+
 
 #Question 3: Have any state’s average population increased while incarceration rates didn't?
 
 #Question 4: Are there any counties driving a state's incarceration rate?
+Yes, in West Virginia there are counties 37 counties that in at least one of the years reported 0 incarcerations. This is extremely strange because West Virginia has been one of the highest ranked states by incarceration. This means that there are specific counties within the state that are driving the incarceration rate upwards. This is demonstrated by the fact that in certain counties, like Gilmer and Doddrige, the incarceration rate is almost 20% of the total population. This is even more interesting because in both of those counties in 2000, 0% of the population of those counties was incarcerated. 
+
+In certain counties, like Crowley County, CO, 48% of the population is incarcerated. The population of Crowley is 5,000 and the size of the prison is 2,000 people. Is this because it's a small county with a huge prison and we are counting the prisoners as people living the county and not being shipped from other counties?
+
+#Background on West Virginia:
+
+According to Prison Policy's profile on West Virginia, (https://www.prisonpolicy.org/profiles/WV.html), 
+
+“West Virginia has an incarceration rate of 731 per 100,000 people (including prisons, jails, immigration detention, and juvenile justice facilities), meaning that it locks up a higher percentage of its people than any democracy on earth.”
+
+Slightly more than half of the incarcerated people that the Census counted in West Virginia were in a federal prison, and there are more people incarcerated in federal prisons in the state than are incarcerated in state and local jails combined. Almost one out of every 200 people in the state is locked up in a federal prison, a rate more than seven times higher than the country as a whole.
+
+Until 2010, the senior senator on the U.S. Senate’s appropriation’s committee was West Virginia Senator Robert Byrd. As the longest serving U.S. Senator in history — not to mention multi-term Chairman of the Senate Committee on Appropriations — Byrd was powerful, and he focused his political clout on bringing as much federal money in to West Virginia as he could. He did so by building more federal prisons and getting more federal money to come into the state.
+
+This graph of West Virginia's prison population shows a steady growth of ~500 more people added to the WV prison system per year. - https://wvpolicy.org/wp-content/uploads/2019/02/WVCBP_IncarcerationInfographic_FINAL.pdf
+
+The number of West Virgins incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
+
+Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-fell-in-the-last-year-but-on-the-rise-again/
+
+Between the beginning of March 2020 and April 15, 2020, the state’s total incarcerated population fell by nearly 13 percent as officials made efforts to prevent COVID-19 spread in jails and prisons. It wasn’t until July — four months after Governor Jim Justice declared a state of emergency — that the prison population fell by 1,000 below pre-pandemic levels and remained below that number.  At 3,831 people, the prison population on March 15, 2021 was at its lowest since 2003. 
+
+
+
+
+```{r}
+wv_zoom<-clean_counties %>% 
+  filter(state=="WV") %>% 
+  mutate(
+    rate_20 = (incarcerated_20)/(total_population_20)*100,
+    rate_10 = (incarcerated_10)/(total_population_10)*100,
+    rate_00 = (incarcerated_00)/(total_population_00)*100)
+wv_zoom %>% pivot_longer(starts_with("inc"),values_to = "cnt",names_to = "year") %>% select(state,county,year,cnt)
+wv_zoom %>% filter(incarcerated_20==0 | incarcerated_10==0 | incarcerated_00==0)
+##  count(incarcerated_pop_00==0, incarcerated_pop_10==0, incarcerated_pop_20 == 0)
+```
+
 
 #Question 5: How does incarceration rates over the years compare to population rates?
 
 #Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
+After a little bit of research, Nantucket, which is one of the counties that reports having 0 people incarcerated, "does not have a facility on Nantucket for holding prisoners."
+(https://www.muckrock.com/foi/nantucket-214/jail-deaths-2020-21-nantucket-county-sheriffs-department-119440/#file-973814)
+
+#Solution-based Journalism
+
+According to the ACLU (https://www.aclu.org/blog/smart-justice/mass-incarceration/how-1994-crime-bill-fed-mass-incarceration-crisis), politicans must disavow the 1994 crime bill and instead support a 50% cut in incarceration rates on the federal and state levels in order to get incarceration rates back to manageable levels. 
+
+The common narrative is that private prisons are the lifeblood of the US prison system. In fact, only 8% of US prisons are privately owned and operated.
+
+The ACLU suggests those running for federal office should pledge to use their power to close prisons once in office, which they say would be the best way to counteract the effects of the 1994 crime bill and prove to the public that you as a politician don't believe in the widely-discredited tough-on-crime policies of the past.
+
+#Other Notes
+
+Prisons and the census - https://www.prisonersofthecensus.org/faq.html#:~:text=A%3A%20The%20Census%20justifies%20counting,special%20populations%20in%20the%20past.
+
+Incentives: Federal Funding and the prison boom: https://www.brennancenter.org/issues/end-mass-incarceration/changing-incentives
+
+Economics of Incarceration - https://www.prisonpolicy.org/research/economics_of_incarceration/
+
+Conservatism and Crimial Justice Reform - https://www.theguardian.com/us-news/2018/aug/05/the-conservative-case-for-criminal-justice-reform
+
+
+
+```{r}
+state_rates <-clean_counties %>% 
+  group_by(state) %>% 
+  summarise(
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>%
+  mutate(
+    rank_20 = min_rank(-rate_20),
+    rank_10 = min_rank(-rate_10),
+    rank_00 = min_rank(-rate_00)) %>% 
+  bind_rows(rates) %>%
+  arrange(desc(rate_20))
+```
+
+```{r}
+state_rates %>% 
+  ggplot(aes(rate_20))+ geom_histogram(bins = 20)+geom_vline(xintercept = rates$rate_20) +
+  geom_label(aes(y=8,label=state))
+ 
+```
+
+
+```{r}
+counties_with_zero<-clean_counties %>% 
+  arrange(incarcerated_20 + incarcerated_10 + incarcerated_20)
+```
+```{r}
+allcounty_rates<-clean_counties %>% 
+  mutate(rate_20=incarcerated_20/total_population_20*100,
+         rate_10=incarcerated_10/total_population_10*100,
+         rate_00=incarcerated_00/total_population_00*100) %>% 
+  arrange(-rate_20) %>% select (state,county,rate_20:rate_00)
+```
+
+
+
 
 ```{r}
 #states
