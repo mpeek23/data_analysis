@@ -39,7 +39,7 @@ rates <- clean_counties %>%
 ```
 
 #Background on incarceration rates in the US:
-If each state was its own country, 31 US states would rank highest in the world ahead of another country’s prisoner population, El Salvador being the first non-US state or country to rank in the top 33. Even Massachusetts, the state with the lowest incarceration rate, would rank 9th as a country in the world. “Many of the countries that rank alongside the least punitive U.S. states, such as Turkmenistan, Thailand, Rwanda, and Russia, have authoritarian governments or have recently experienced large-scale internal armed conflicts. Others struggle with violent crime on a scale far beyond that in the U.S.: El Salvador, Russia, Panama, Costa Rica, and Brazil all have murder rates more than double that of the U.S. Yet the U.S., “land of the free,” tops them all.”
+As of 2018, if each state was its own country, 31 US states would rank highest in the world ahead of another country’s prisoner population, El Salvador being the first non-US state or country to rank in the top 33. Even Massachusetts, the state with the lowest incarceration rate, would rank 9th as a country in the world. “Many of the countries that rank alongside the least punitive U.S. states, such as Turkmenistan, Thailand, Rwanda, and Russia, have authoritarian governments or have recently experienced large-scale internal armed conflicts. Others struggle with violent crime on a scale far beyond that in the U.S.: El Salvador, Russia, Panama, Costa Rica, and Brazil all have murder rates more than double that of the U.S. Yet the U.S., “land of the free,” tops them all.”
 
 For four decades, the US made various policy decisions to make criminal justice and law enforcement more punitive. The end result is 70% of convictions ending in confinement, far more than other developed nations with similar crime rates.
 
@@ -107,6 +107,10 @@ Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-f
 
 Between the beginning of March 2020 and April 15, 2020, the state’s total incarcerated population fell by nearly 13 percent as officials made efforts to prevent COVID-19 spread in jails and prisons. It wasn’t until July — four months after Governor Jim Justice declared a state of emergency — that the prison population fell by 1,000 below pre-pandemic levels and remained below that number.  At 3,831 people, the prison population on March 15, 2021 was at its lowest since 2003. 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 ```{r}
 wv_zoom<-clean_counties %>% 
   filter(state=="WV") %>% 
@@ -182,6 +186,7 @@ allcounty_rates<-clean_counties %>%
 ```
 
 ```{r}
+<<<<<<< Updated upstream
 allcounty_rates_table <- allcounty_rates %>% 
   head(10)
 ```
@@ -197,6 +202,14 @@ allcounty_rates_table <- allcounty_rates %>%
   #9 Union County, FL
   #10 Lake County, TN
   
+=======
+prison_locations <-read_csv("prison_boundaries.csv")
+  
+```
+
+
+
+>>>>>>> Stashed changes
 #Analysis of the data
 The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico's municipios. I sorted and then saved everything that is not a county in the dataframe not_counties. 
 
