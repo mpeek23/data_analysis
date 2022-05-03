@@ -107,6 +107,7 @@ Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-f
 
 Between the beginning of March 2020 and April 15, 2020, the state’s total incarcerated population fell by nearly 13 percent as officials made efforts to prevent COVID-19 spread in jails and prisons. It wasn’t until July — four months after Governor Jim Justice declared a state of emergency — that the prison population fell by 1,000 below pre-pandemic levels and remained below that number.  At 3,831 people, the prison population on March 15, 2021 was at its lowest since 2003.
 
+
 ```{r}
 wv_zoom<-clean_counties %>%
   filter(state=="WV") %>%
@@ -180,6 +181,22 @@ allcounty_rates<-clean_counties %>%
          rate_00=incarcerated_00/total_population_00*100) %>%
   arrange(-rate_20) %>% select (state,county,rate_20:rate_00)
 ```
+
+```{r}
+allcounty_rates_table <- allcounty_rates %>%
+  head(10)
+```
+#Top 10 County Incarceration Rates
+  #1 Crowley County, CO
+  #2 Forest County, PA
+  #3 Issaquena County, MS
+  #4 West Feliciana Parish, LA
+  #5 Wheeler County, GA
+  #6 Hudspeth County, TX
+  #7 Concho County, TX
+  #8 Garza County, TX
+  #9 Union County, FL
+  #10 Lake County, TN
 
 ```{r}
 prison_locations <-read_csv("prison_boundaries.csv")
