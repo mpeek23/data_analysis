@@ -190,7 +190,7 @@ allcounty_rates_table <- allcounty_rates %>%
   #1 Crowley County, CO
       Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the county is small and it has 4 jails/prison facilities. The two correctional facilities in the county have a total of 2,850 beds and there are two small jails. It's interesting that every bed is supposedly full in the county.
   #2 Forest County, PA
-      
+      Forest County, Pennsylvania has a total population of 6,973 and the incarcerated population is       2,653, a rate of approximately 38%. 
   #3 Issaquena County, MS
   #4 West Feliciana Parish, LA
   #5 Wheeler County, GA
