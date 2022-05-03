@@ -188,8 +188,7 @@ allcounty_rates_table <- allcounty_rates %>%
 ```
 #Top 10 County Incarceration Rates
   #1 Crowley County, CO
-      Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 
-      5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the       county is small and it has 4 jails/prison facilities. The two correctional facilities in the        county have a total of 2,850 beds and there are two small jails. It's interesting that every        bed is supposedly full in the county.
+      Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the county is small and it has 4 jails/prison facilities. The two correctional facilities in the county have a total of 2,850 beds and there are two small jails. It's interesting that every bed is supposedly full in the county.
   #2 Forest County, PA
       
   #3 Issaquena County, MS
@@ -200,10 +199,15 @@ allcounty_rates_table <- allcounty_rates %>%
   #8 Garza County, TX
   #9 Union County, FL
   #10 Lake County, TN
+```{r}
+zipstocounty <- read_excel("ZIP_COUNTY_122021.xlsx")
+  take fipps codes from census data and then add the fipps codes to the prison locations and then put the join the zip codes from the zip codes/fipps per county with the counties in the prison locations
+``` 
+
 
 ```{r}
 prison_locations <-read_csv("prison_boundaries.csv")
-
+  
 ```
 
 
