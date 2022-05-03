@@ -54,7 +54,9 @@ Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving t
 
 Over the past 20 years, Louisiana has been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st. 
 
-Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because thats where it's cheaper to build prisons)?
+Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because thats where it's cheaper to build prisons)?  
+
+***abby make a chart of the ranks datawrapper****
 
 #Background on Republican States
 
