@@ -183,21 +183,19 @@ allcounty_rates<-clean_counties %>%
 
 ```{r}
 allcounty_rates_table <- allcounty_rates %>%
-  head(10)
+  head(5)
 ```
-#Top 10 County Incarceration Rates
+#Top 5 County Incarceration Rates
   #1 Crowley County, CO
       Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the county is small and it has 4 jails/prison facilities. The two correctional facilities in the county have a total of 2,850 beds and there are two small jails. It's interesting that every bed is supposedly full in the county.
   #2 Forest County, PA
-      Forest County, Pennsylvania has a total population of 6,973 and the incarcerated population is       2,653, a rate of approximately 38%. 
+      Forest County, Pennsylvania has a total population of 6,973 and the incarcerated population is       2,653, a rate of approximately 38%. There's a juvenile detention center that holds 204, a           county jail, and a maximum security facility that holds 1,961 people. That's a total of 2,165        beds, so I'm curious where the spare 500 people could be- it's possible they may be staying         long term in the jail, or there's overcrowding in the prison facilities.
   #3 Issaquena County, MS
+     Issaquena County, Mississippi has a total population of 1,338. Its the smallest county in           Mississippi and the poorest. Its incarcerated population was 493, with an incarceration rate of      about 36%. There is a medium security correctional facility, with a capacity of 274 and a           county jail. I wonder if there missing 200 people were sent off to other counties because there      wasn't enough room.
   #4 West Feliciana Parish, LA
+    West Feliciana Parish, Louisiana has a total population of 15,310 and an incarcerated population     of 5,284, approximately 34% of the population was incarcerated. This may be due to the county being the home to Louisiana State Penitentiary, a maximum security large property surrounded by 3 sides of water, with an occupancy of 6,312. The state also has a parish detention center, work release program and transitional work program.
   #5 Wheeler County, GA
-  #6 Hudspeth County, TX
-  #7 Concho County, TX
-  #8 Garza County, TX
-  #9 Union County, FL
-  #10 Lake County, TN
+     Wheeler County, Georgia has a total population of 7,741 and an incarcerated population of 2,362, with a rate of about 31% of the population incarcerated. Wheeler County is one of the poorest counties in the nation and is home to the Wheeler County Correctional Center, which has occupancy for over 3,000 inmates.
 
 
 ```{r}
