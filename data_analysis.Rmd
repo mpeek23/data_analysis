@@ -54,9 +54,8 @@ Over the past 20 years, West Virginia has jumped from 28 to 2. What is driving t
 
 Over the past 20 years, Louisiana has been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st.
 
-Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because thats where it's cheaper to build prisons)?  
+Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because that's where it's cheaper to build prisons)?  
 
-***abby make a chart of the ranks datawrapper****
 
 #Background on Republican States
 
@@ -199,16 +198,60 @@ allcounty_rates_table <- allcounty_rates %>%
   #8 Garza County, TX
   #9 Union County, FL
   #10 Lake County, TN
-```{r}
-zipstocounty <- read_excel("ZIP_COUNTY_122021.xlsx")
-  take fipps codes from census data and then add the fipps codes to the prison locations and then put the join the zip codes from the zip codes/fipps per county with the counties in the prison locations
-``` 
 
 
 ```{r}
-prison_locations <-read_csv("prison_boundaries.csv")
-  
+prison_pop <- census_data
+prison_pop <- prison_pop %>% mutate(FIPS=str_pad(FIPS,5,"left","0"),ST_FIPS=substr(FIPS,1,2),COUNTY_FIPS=substr(FIPS,3,6)) %>%
+  group_by(state,ST_FIPS) %>% summarise(across(total_population_20:incarcerated_00,~sum(.x))) %>% 
+  mutate(percent_00=100*incarcerated_00/total_population_00,
+         percent_10=100*incarcerated_10/total_population_10,
+         percent_20=100*incarcerated_20/total_population_20
+         ) %>% ungroup()
+# join with the state data...
+bad_states=c("Alaska","Commonwealth of the Northern Mariana Islands","United States Virgin Islands" ,"Guam","American Samoa","Puerto Rico","Hawaii")
+states <- states() %>% filter(!NAME %in% bad_states)
+states <- states %>% inner_join(prison_pop,by=c("STATEFP" = "ST_FIPS"))
+
+
+## plot
+total_20 <- ggplot() + geom_sf(aes(fill=incarcerated_20),data = states) + theme_minimal()
+total_10 <- ggplot() + geom_sf(aes(fill=incarcerated_10),data = states) + theme_minimal()
+total_00 <- ggplot() + geom_sf(aes(fill=incarcerated_00),data = states) + theme_minimal()
+percent_20 <- ggplot() + geom_sf(aes(fill=percent_20),data = states) + theme_minimal()
+percent_10 <- ggplot() + geom_sf(aes(fill=percent_10),data = states) + theme_minimal()
+percent_00 <- ggplot() + geom_sf(aes(fill=percent_00),data = states) + theme_minimal()
+system.time(ggsave(filename = "percent00.pdf",percent_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent10.pdf",percent_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent20.pdf",percent_20,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_00.pdf",total_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_10.pdf",total_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_20.pdf",total_20,width = 10,height = 7,dpi=300,units = "in"))
 ```
+```{r}
+rank_change <-states %>% 
+  mutate(twenty_year= percent_20-percent_00)
+
+ rank_map<- ggplot() + geom_sf(aes(fill=twenty_year),data = rank_change) + theme_minimal()
+ system.time(ggsave(filename = "rank_map.pdf",rank_map, width = 10,height = 7,dpi=300,units = "in"))
+```
+```{r}
+bad_states2=c("AK","VI","GU" ,"AS","PR","HI","MP")
+prison_geometry <- st_read("Prison_Boundaries/Prison_Boundaries.shp") %>% filter(!STATE %in% bad_states2,!is.na(STATE))
+
+prison <- ggplot() + geom_sf(data = prison_geometry) + theme_minimal()
+
+STFP <- states %>% filter(!state %in% bad_states2) %>% select(STATEFP,state) %>% pull(name=state,STATEFP) %>% enframe
+county = counties() %>% left_join(STFP,by=c("STATEFP"="value")) %>% filter(!is.na(name))
+
+#prison2 <- ggplot() + geom_sf(data = prison_geometry) + geom_sf(data = county) + theme_minimal()
+prison2 <- ggplot()+ geom_sf(data = county) + geom_sf(data = prison_geometry,color="red")  + theme_minimal()
+ggsave("prison2.pdf",prison2,width = 10,height = 7,dpi=300,units = "in")
+
+
+```
+
+
 
 
 
