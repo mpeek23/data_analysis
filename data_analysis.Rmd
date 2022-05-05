@@ -25,7 +25,7 @@ clean_counties <-census_data %>%
 ```
 
 ```{r}
-write_csv(clean_counties, "clean_counties.csv")
+write_csv(clean_counties, "data/clean_counties.csv")
 ```
 #National Rates
 ```{r}
