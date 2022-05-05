@@ -15,7 +15,7 @@ census_api_key("ab0ed8418e6554d3eb77ed342784e3bb0b002a64")#, install=TRUE)
 
 #Loading Data
 ```{r}
-census_data <- read_csv("census_incarceration.csv")
+census_data <- read_csv("data/census_incarceration.csv")
 ```
 
 #Clean Data
@@ -24,6 +24,9 @@ clean_counties <-census_data %>%
   filter(state != "PR", state != "AK")
 ```
 
+```{r}
+write_csv(clean_counties, "clean_counties.csv")
+```
 #National Rates
 ```{r}
 rates <- clean_counties %>%
