@@ -59,6 +59,16 @@ Over the past 20 years, Louisiana has been in the top 2. In 2000, they were rank
 
 Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). Could this be because there are states that ship their incarcerated people to other states (maybe states with high property values ship their incarcerated people to states with low property value because that's where it's cheaper to build prisons)?  
 
+```{r}
+state_rates %>% 
+  mutate(
+    change_in_rank_20 = (rank_20)-(rank_00),
+    change_in_rank_10 = (rank_20)-(rank_10),
+    first_change_in_rank= (rank_10)-(rank_00)
+  )
+```
+
+
 
 #Background on Republican States
 
