@@ -1,0 +1,330 @@
+---
+title: "data_analysis_project"
+output: html_notebook
+---
+
+#Introduction
+
+The Marshall Project: There Are Fewer People Behind Bars Now Than 10 Years Ago. Will It Last? (https://www.themarshallproject.org/2021/09/20/there-are-fewer-people-behind-bars-now-than-10-years-ago-will-it-last)
+
+The story above seems to contradict the common narrative about exploding prison populations in the US. We decided to look at the dataset of prison populations over the last 20 years and see how it compares on a state and county level to census population sizes. We set out to see which states were driving the prison population higher and which were making noticeable dents in the decreasing number of prisoners, as well as research possible causes for changes in prison populations state by state. How do individual state incarceration rates compare to the national average?
+Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average? Are there any counties driving a state's incarceration rate?
+How does incarceration rates over the years compare to population rates? Why do some counties have zero people incarcerated and do we think it’s accurate? Is there a correlation between traditionally Republican states and higher prision populations, and Democratic states and lower prison populations? These were a few preliminary questions we set out to answer by investigating the dataset. 
+
+
+#Background on incarceration rates in the US:
+According to the Prison Policy Initiative in 2021 (https://www.prisonpolicy.org/global/2021.html), if each US state was its own country, 35 states along with the US itself would rank highest in the world ahead of every other country’s prison population. El Salvador would be the first non-US state or country to rank in the top 36. Even Massachusetts, a solid Democratic state and the state with the lowest incarceration rate in the US, would rank 17th as a country in the world if no other US states had a prison population.
+
+“Many of the countries that rank alongside the least punitive U.S. states, such as Turkmenistan, Thailand, Rwanda, and Russia, have authoritarian governments or have recently experienced large-scale internal armed conflicts. Others struggle with violent crime on a scale far beyond that in the U.S.: El Salvador, Russia, Panama, Costa Rica, and Brazil all have murder rates more than double that of the U.S. Yet the U.S., “land of the free,” tops them all.”
+
+As is shown in the Prison Policy graphic, West Virginia's prison population outweighs even the US prison population when stacked up against founding NATO countries. As we'll show later, we were able to corroborate these findinds both with data and with policy decisions and economic incentives.
+
+For four decades, the US made various policy decisions to make criminal justice and law enforcement more punitive. The end result is 70% of convictions ending in confinement, far more than other developed nations with similar crime rates.
+
+Just under one-quarter of the world's prisoners are held in American prisons. - (https://nap.nationalacademies.org/read/18613/chapter/5)
+
+
+#Loading Libraries
+```{r}
+library(tidyverse)
+library(sf)
+library(janitor)
+library(tidycensus)
+library(tigris)
+library(lubridate)
+census_api_key("ab0ed8418e6554d3eb77ed342784e3bb0b002a64")#, install=TRUE)
+```
+
+#Loading Data
+```{r}
+census_data <- read_csv("data/census_incarceration.csv")
+```
+
+#Clean Data
+```{r}
+clean_counties <-census_data %>%
+  filter(state != "PR", state != "AK")
+```
+
+```{r}
+write_csv(clean_counties, "data/clean_counties.csv")
+```
+
+#National Rates
+```{r}
+rates <- clean_counties %>%
+  summarise(
+    state= "US",
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100,
+    rank_20 = NA,
+    rank_10 = NA,
+    rank_00 = NA
+             )
+```
+
+#Overview of Main Findings:
+-Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd, all while 37 West Virginia counties have reported 0 incarcerations in at least one census. In other West Virginian counties, almost half of the population is incarcerated.
+
+-The number of West Virgins incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
+
+-Republican states have generally increased in incarceration rates while Democratic states have generally decreased.
+
+
+Counties with the highest incarcertain rates per 100k people in 2020:
+	
+1. Crowley County, Colorado - 48.13%
+2. Forest County, PA - 38.05%
+3. Issaquena County, MS - 36.85%
+4. West Feliciana Parish, LA - 34.51%
+5. Wheeler County, GA - 31.62%
+
+States with the highest incarceration rates per 100k people in 2020:
+
+
+
+
+-Top 5 states with most change:
+
+
+-Interestingly, private prisons don't seem to be a driving factor in the division driving red states higher and blue states lower. Accounting for only 8% of incarceration rates in the US, private prisons are most highly concentrated in New Mexico, Montana and New Jersey: a purple, red and blue state respectively, while West Virginia doesn't have any private prisons. 
+
+#Diving Into the Data:
+
+```{r}
+allcounty_rates<-clean_counties %>%
+  mutate(rate_20=incarcerated_20/total_population_20*100,
+         rate_10=incarcerated_10/total_population_10*100,
+         rate_00=incarcerated_00/total_population_00*100) %>%
+  arrange(-rate_20) %>% select (state,county,rate_20:rate_00)
+```
+
+```{r}
+allcounty_rates_table <- allcounty_rates %>%
+  head(5)
+```
+#Top 5 County Incarceration Rates
+  #1 Crowley County, CO
+      Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the county is small and it has 4 jails/prison facilities. The two correctional facilities in the county have a total of 2,850 beds and there are two small jails. It's interesting that every bed is supposedly full in the county.
+  #2 Forest County, PA
+      Forest County, Pennsylvania has a total population of 6,973 and the incarcerated population is 2,653, a rate of approximately 38%. There's a juvenile detention center that holds 204, a county jail, and a maximum security facility that holds 1,961 people. That's a total of 2,165 beds, so I'm curious where the spare 500 people could be- it's possible they may be staying long term in the jail, or there's overcrowding in the prison facilities.
+  #3 Issaquena County, MS
+     Issaquena County, Mississippi has a total population of 1,338. Its the smallest county in Mississippi and the poorest. Its incarcerated population was 493, with an incarceration rate of about 36%. There is a medium security correctional facility, with a capacity of 274 and a county jail. I wonder if there missing 200 people were sent off to other counties because there wasn't enough room.
+  #4 West Feliciana Parish, LA
+    West Feliciana Parish, Louisiana has a total population of 15,310 and an incarcerated population of 5,284, approximately 34% of the population was incarcerated. This may be due to the county being the home to Louisiana State Penitentiary, a maximum security large property surrounded by 3 sides of water, with an occupancy of 6,312. The state also has a parish detention center, work release program and transitional work program.
+  #5 Wheeler County, GA
+     Wheeler County, Georgia has a total population of 7,741 and an incarcerated population of 2,362, with a rate of about 31% of the population incarcerated. Wheeler County is one of the poorest counties in the nation and is home to the Wheeler County Correctional Center, which has occupancy for over 3,000 inmates.
+
+
+#Question1 : How do individual state incarceration rates compare to the national average?
+There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states, omitting Alaska. Half of 49 is 24.5, which is just slightly above 22. This also tells us that there are states pulling the the national rate up because the average is above the median of the states.
+
+#Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
+Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd. Notably, West Viriginia was narrowly a blue state in the presidential election 20 years ago and has swung Red in recent elections, currently with one Republican and one moderate-centerist Democrat in the Senate who notoriously doesn't always fall in line with the Democratic party. 
+
+By contrast, Georgia, which swung blue in the 2020 election for the first time since 1992, has traditionally been a red state but has been growing increasingly blue. Both Senators in Georgia are currently Democrats. Georgia has been falling in the ranks of incarceration rates since 2000. They've dropped from 3rd to 7th over 20 years.
+
+Over the past 20 years, Louisiana has consistently been in the top 2. In 2000, they were ranked 2nd and in 2010 and 2020 they were ranked 1st.
+
+Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). 
+
+```{r}
+state_rates %>% 
+  mutate(
+    change_in_rank_20 = (rank_20)-(rank_00),
+    change_in_rank_10 = (rank_20)-(rank_10),
+    first_change_in_rank= (rank_10)-(rank_00)
+  )
+```
+
+
+
+#Background on Voting in Red and Blue States
+
+According to Felonvoting.procon.org (https://felonvoting.procon.org/state-felon-voting-laws/), states fall into four categories of felony voting rights across the US. 
+
+1. The states where felons can lose voting rights forever after a felon gets out of prison are all Republican states  plus Delaware.
+
+2. States where voting is restored only after prisons, parole and probation are overwhelmingly Republican states except for New Mexico, Minnesota, Wisconsin and (newly Democratic) Georgia.
+
+3. States where voting rights are restored after a felon is released from prison are mostly Democratic states except for Utah, Montana, North Dakota, Indiana, Ohio, and North Carolina
+
+4. Places where felons can vote from prison are two Democratic states and DC.
+
+Since incarceration rates disproportionately affect Black and Brown men, who historically vote Democrat, one could surmise that incarceration rates might be a tool for voter suppression. With Republican states growing in incarceration population over the last 20 years as more punitive criminal justice measures have been inacted, this has greatly affected the number of voters in each state, mostly Republican states.
+
+From a paper published by SSC.WISC.EDU, https://www.ssc.wisc.edu/~oliver/wp/wp-content/uploads/2015/12/Oliver2011Political-FactorsIStateIncarceration.pdf :
+
+“Since 1968, Republican presidential candidates have pursued the "Southern strategy" of campaigning against crime, characterizing Democrats as "soft on crime" and relying on racially-coded references to welfare and crime. There are also strong racial patterns in presidential voting since 1968, with Blacks voting overwhelmingly Democratic and Whites typically giving an edge to Republicans. These patterns lead to general expectations among
+both the general public and sociologists that more punitive policies will be associated with times and places where Republicans are in power.”
+
+“At the aggregate national level, the racial disparity in imprisonment rose steeply at the end of the 1980s during a Republican presidency and began to decline after 1995, during the Clinton presidency.”
+
+That said, incarceration rates nationwide continued to climb steadily for 14 years after the passage of the 1994 Crime Bill. By the time of the passage, every state in the nation had passed at least one mandatory minimum law, and the 94 Crime Bill encouraged even more punitive laws and harsher practices on the ground, including by prosecutors and police, to lock up more people and for longer periods of time. This platform remained largely in place until 12 years later, when in 2008, the tone and substance began to change under new leadership in the party.
+
+
+#Question 3: Are there any counties driving a state's incarceration rate?
+Yes, in West Virginia there are counties 37 counties that in at least one of the years reported 0 incarcerations. This is extremely strange because West Virginia has been one of the highest ranked states by incarceration. This means that there are specific counties within the state that are driving the incarceration rate upwards. This is demonstrated by the fact that in certain counties, like Gilmer and Doddrige, the incarceration rate is almost 20% of the total population. This is even more interesting because in both of those counties in 2000, 0% of the population of those counties was incarcerated.
+
+In certain counties, like Crowley County, CO, 48% of the population is incarcerated. The population of Crowley is 5,000 and the size of the prison is 2,000 people. Is this because it's a small county with a huge prison and we are counting the prisoners as people living the county and not being shipped from other counties?
+
+#Background on West Virginia:
+
+According to Prison Policy's profile on West Virginia, (https://www.prisonpolicy.org/profiles/WV.html), “West Virginia has an incarceration rate of 731 per 100,000 people (including prisons, jails, immigration detention, and juvenile justice facilities), meaning that it locks up a higher percentage of its people than any democracy on earth.”
+
+Slightly more than half of the incarcerated people that the Census counted in West Virginia were in a federal prison, and there are more people incarcerated in federal prisons in the state than are incarcerated in state and local jails combined. Almost one out of every 200 people in the state is locked up in a federal prison, a rate more than seven times higher than the country as a whole.
+
+Until 2010, the senior senator on the U.S. Senate’s appropriation’s committee was West Virginia Senator Robert Byrd. As the longest serving U.S. Senator in history — not to mention multi-term Chairman of the Senate Committee on Appropriations — Byrd was powerful, and he focused his political clout on bringing as much federal money in to West Virginia as he could. He did so by building more federal prisons and getting more federal money to come into the state.
+
+This graph of West Virginia's prison population shows a steady growth of ~500 more people added to the WV prison system per year. - https://wvpolicy.org/wp-content/uploads/2019/02/WVCBP_IncarcerationInfographic_FINAL.pdf
+
+The number of West Virgins incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
+
+Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-fell-in-the-last-year-but-on-the-rise-again/
+
+Between the beginning of March 2020 and April 15, 2020, the state’s total incarcerated population fell by nearly 13 percent as officials made efforts to prevent COVID-19 spread in jails and prisons. It wasn’t until July — four months after Governor Jim Justice declared a state of emergency — that the prison population fell by 1,000 below pre-pandemic levels and remained below that number.  At 3,831 people, the prison population on March 15, 2021 was at its lowest since 2003.
+
+
+```{r}
+wv_zoom<-clean_counties %>%
+  filter(state=="WV") %>%
+  mutate(
+    rate_20 = (incarcerated_20)/(total_population_20)*100,
+    rate_10 = (incarcerated_10)/(total_population_10)*100,
+    rate_00 = (incarcerated_00)/(total_population_00)*100)
+wv_zoom %>% pivot_longer(starts_with("inc"),values_to = "cnt",names_to = "year") %>% select(state,county,year,cnt)
+wv_zoom %>% filter(incarcerated_20==0 | incarcerated_10==0 | incarcerated_00==0)
+##  count(incarcerated_pop_00==0, incarcerated_pop_10==0, incarcerated_pop_20 == 0)
+```
+
+
+#Question 6: Why do some counties have zero people incarcerated and do we think it’s accurate?
+After a little bit of research, Nantucket, which is one of the counties that reports having 0 people incarcerated, "does not have a facility on Nantucket for holding prisoners."
+(https://www.muckrock.com/foi/nantucket-214/jail-deaths-2020-21-nantucket-county-sheriffs-department-119440/#file-973814)
+
+#Solution-based Journalism
+
+According to the ACLU (https://www.aclu.org/blog/smart-justice/mass-incarceration/how-1994-crime-bill-fed-mass-incarceration-crisis), politicans must disavow the 1994 crime bill and instead support a 50% cut in incarceration rates on the federal and state levels in order to get incarceration rates back to manageable levels.
+
+The common narrative is that private prisons are the lifeblood of the US prison system. In fact, only 8% of US prisons are privately owned and operated.
+
+The ACLU suggests those running for federal office should pledge to use their power to close prisons once in office, which they say would be the best way to counteract the effects of the 1994 crime bill and prove to the public that you as a politician don't believe in the widely-discredited tough-on-crime policies of the past.
+
+#Other Notes
+
+
+```{r}
+state_rates <-clean_counties %>%
+  group_by(state) %>%
+  summarise(
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>%
+  mutate(
+    rank_20 = min_rank(-rate_20),
+    rank_10 = min_rank(-rate_10),
+    rank_00 = min_rank(-rate_00)) %>%
+  bind_rows(rates) %>%
+  arrange(desc(rate_20))
+```
+
+```{r}
+state_rates %>%
+  ggplot(aes(rate_20))+ geom_histogram(bins = 20)+geom_vline(xintercept = rates$rate_20) +
+  geom_label(aes(y=8,label=state))
+
+```
+
+
+```{r}
+counties_with_zero<-clean_counties %>%
+  arrange(incarcerated_20 + incarcerated_10 + incarcerated_20)
+```
+
+
+```{r}
+prison_pop <- census_data
+prison_pop <- prison_pop %>% mutate(FIPS=str_pad(FIPS,5,"left","0"),ST_FIPS=substr(FIPS,1,2),COUNTY_FIPS=substr(FIPS,3,6)) %>%
+  group_by(state,ST_FIPS) %>% summarise(across(total_population_20:incarcerated_00,~sum(.x))) %>% 
+  mutate(percent_00=100*incarcerated_00/total_population_00,
+         percent_10=100*incarcerated_10/total_population_10,
+         percent_20=100*incarcerated_20/total_population_20
+         ) %>% ungroup()
+# join with the state data...
+bad_states=c("Alaska","Commonwealth of the Northern Mariana Islands","United States Virgin Islands" ,"Guam","American Samoa","Puerto Rico","Hawaii")
+states <- states() %>% filter(!NAME %in% bad_states)
+states <- states %>% inner_join(prison_pop,by=c("STATEFP" = "ST_FIPS"))
+
+
+## plot
+total_20 <- ggplot() + geom_sf(aes(fill=incarcerated_20),data = states) + theme_minimal()
+total_10 <- ggplot() + geom_sf(aes(fill=incarcerated_10),data = states) + theme_minimal()
+total_00 <- ggplot() + geom_sf(aes(fill=incarcerated_00),data = states) + theme_minimal()
+percent_20 <- ggplot() + geom_sf(aes(fill=percent_20),data = states) + theme_minimal()
+percent_10 <- ggplot() + geom_sf(aes(fill=percent_10),data = states) + theme_minimal()
+percent_00 <- ggplot() + geom_sf(aes(fill=percent_00),data = states) + theme_minimal()
+system.time(ggsave(filename = "percent00.pdf",percent_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent10.pdf",percent_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent20.pdf",percent_20,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_00.pdf",total_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_10.pdf",total_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_20.pdf",total_20,width = 10,height = 7,dpi=300,units = "in"))
+```
+```{r}
+rank_change <-states %>% 
+  mutate(twenty_year= percent_20-percent_00)
+
+ rank_map<- ggplot() + geom_sf(aes(fill=twenty_year),data = rank_change) + theme_minimal()
+ system.time(ggsave(filename = "rank_map.pdf",rank_map, width = 10,height = 7,dpi=300,units = "in"))
+ 
+```
+
+```{r}
+bad_states2=c("AK","VI","GU" ,"AS","PR","HI","MP")
+prison_geometry <- st_read("Prison_Boundaries/Prison_Boundaries.shp") %>% filter(!STATE %in% bad_states2,!is.na(STATE))
+
+prison <- ggplot() + geom_sf(data = prison_geometry) + theme_minimal()
+
+STFP <- states %>% filter(!state %in% bad_states2) %>% select(STATEFP,state) %>% pull(name=state,STATEFP) %>% enframe
+county = counties() %>% left_join(STFP,by=c("STATEFP"="value")) %>% filter(!is.na(name))
+
+#prison2 <- ggplot() + geom_sf(data = prison_geometry) + geom_sf(data = county) + theme_minimal()
+prison2 <- ggplot()+ geom_sf(data = county) + geom_sf(data = prison_geometry,color="red")  + theme_minimal()
+ggsave("prison2.pdf",prison2,width = 10,height = 7,dpi=300,units = "in")
+
+
+```
+
+
+
+
+
+#Analysis of the data
+The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico's municipios. I sorted and then saved everything that is not a county in the dataframe not_counties.
+
+```{r}
+graph_over_time<-census_data %>%
+  pivot_longer(cols = starts_with("incarcerated"), names_to = "year", values_to = "number") %>%
+  select(state, county, year, number) %>%
+  mutate(sc=paste0(state,county)) %>%
+  ggplot()+
+  geom_point(aes(x=year, y=number))+
+  geom_line(aes(x=year, y=number, group=sc))
+```
+
+```{r}
+hist_over_time<-census_data %>%
+  pivot_longer(cols = starts_with("incarcerated"), names_to = "year", values_to = "number") %>%
+  select(state, county, year, number) %>% filter(number<6000) %>%
+  ggplot(aes(x=number)) + facet_wrap(vars(year),ncol = 2) +
+  geom_histogram(binwidth = 100) +ylab("# of counties") + xlab("number of people incarcerated")
+hist_over_time
+
+```
+
+
+```{r}
+not_counties <-census_data %>%
+  filter(!grepl("County\\s*$",county))
+```
