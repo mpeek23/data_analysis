@@ -9,7 +9,7 @@ The Marshall Project: There Are Fewer People Behind Bars Now Than 10 Years Ago. 
 
 The story above seems to contradict the common narrative about exploding prison populations in the US. We decided to look at the dataset of prison populations over the last 20 years and see how it compares on a state and county level to census population sizes. We set out to see which states were driving the prison population higher and which were making noticeable dents in the decreasing number of prisoners, as well as research possible causes for changes in prison populations state by state. How do individual state incarceration rates compare to the national average?
 Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average? Are there any counties driving a state's incarceration rate?
-How does incarceration rates over the years compare to population rates? Why do some counties have zero people incarcerated and do we think it’s accurate? Is there a correlation between traditionally Republican states and higher prision populations, and Democratic states and lower prison populations? These were a few preliminary questions we set out to answer by investigating the dataset. 
+How does incarceration rates over the years compare to population rates? Why do some counties have zero people incarcerated and do we think it’s accurate? Is there a correlation between traditionally Republican states and higher prison populations, and Democratic states and lower prison populations? These were a few preliminary questions we set out to answer by investigating the dataset. 
 
 
 #Background on incarceration rates in the US:
@@ -50,7 +50,7 @@ clean_counties <-census_data %>%
 write_csv(clean_counties, "data/clean_counties.csv")
 ```
 
-#National Rates
+#National Rates and Rankings
 ```{r}
 rates <- clean_counties %>%
   summarise(
@@ -67,12 +67,12 @@ rates <- clean_counties %>%
 #Overview of Main Findings:
 -Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd, all while 37 West Virginia counties have reported 0 incarcerations in at least one census. In other West Virginian counties, almost half of the population is incarcerated.
 
--The number of West Virgins incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
+-The number of West Virginians incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made by politicians to use imprisonment as the primary response to crime.
 
 -Republican states have generally increased in incarceration rates while Democratic states have generally decreased.
 
 
-Counties with the highest incarcertain rates per 100k people in 2020:
+Counties with the highest incarceration rates per 100k people in 2020:
 	
 1. Crowley County, Colorado - 48.13%
 2. Forest County, PA - 38.05%
@@ -81,7 +81,7 @@ Counties with the highest incarcertain rates per 100k people in 2020:
 5. Wheeler County, GA - 31.62%
 
 States with the highest incarceration rates per 100k people in 2020:
-1. Louisiania
+1. Louisiana
 2. West Virginia
 3. Mississippi
 4. Oklahoma
@@ -91,7 +91,7 @@ States with the highest incarceration rates per 100k people in 2020:
 1. West Virginia (from 28 to 2)
 2. South Dakota (from 26 to 11)
 3. New Mexico (from 25 to 12)
-4. Indianna (from 33 to 20)
+4. Indiana (from 33 to 20)
 5. Montana (from 39 to 29)
 
 -Top 5 states with most decreased rank status:
@@ -134,7 +134,7 @@ allcounty_rates_table <- allcounty_rates %>%
 There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states, omitting Alaska. Half of 49 is 24.5, which is just slightly above 22. This also tells us that there are states pulling the the national rate up because the average is above the median of the states.
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
-Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd. Notably, West Viriginia was narrowly a blue state in the presidential election 20 years ago and has swung Red in recent elections, currently with one Republican and one moderate-centerist Democrat in the Senate who notoriously doesn't always fall in line with the Democratic party. 
+Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd. Notably, West Virginia was narrowly a blue state in the presidential election 20 years ago and has swung red in recent elections, currently with one Republican and one moderate-centrist Democrat in the Senate who notoriously doesn't always fall in line with the Democratic party. 
 
 By contrast, Georgia, which swung blue in the 2020 election for the first time since 1992, has traditionally been a red state but has been growing increasingly blue. Both Senators in Georgia are currently Democrats. Georgia has been falling in the ranks of incarceration rates since 2000. They've dropped from 3rd to 7th over 20 years.
 
@@ -158,15 +158,15 @@ ranked_states_rates <- state_rates %>%
 
 According to Felonvoting.procon.org (https://felonvoting.procon.org/state-felon-voting-laws/), states fall into four categories of felony voting rights across the US. 
 
-1. The states where felons can lose voting rights forever after a felon gets out of prison are all Republican states  plus Delaware.
+1. The states where felons can lose voting rights forever after a felon gets out of prison are all Republican states plus Delaware.
 
 2. States where voting is restored only after prisons, parole and probation are overwhelmingly Republican states except for New Mexico, Minnesota, Wisconsin and (newly Democratic) Georgia.
 
-3. States where voting rights are restored after a felon is released from prison are mostly Democratic states except for Utah, Montana, North Dakota, Indiana, Ohio, and North Carolina
+3. States where voting rights are restored after a felon is released from prison are mostly Democratic states except for Utah, Montana, North Dakota, Indiana, Ohio and North Carolina
 
 4. Places where felons can vote from prison are two Democratic states and DC.
 
-Since incarceration rates disproportionately affect Black and Brown men, who historically vote Democrat, one could surmise that incarceration rates might be a tool for voter suppression. With Republican states growing in incarceration population over the last 20 years as more punitive criminal justice measures have been inacted, this has greatly affected the number of voters in each state, mostly Republican states.
+Since incarceration rates disproportionately affect Black and Brown men, who historically vote Democrat, one could surmise that incarceration rates might be a tool for voter suppression. With Republican states growing in incarceration population over the last 20 years as more punitive criminal justice measures have been enacted, this has greatly affected the number of voters in each state, mostly Republican states.
 
 From a paper published by SSC.WISC.EDU, https://www.ssc.wisc.edu/~oliver/wp/wp-content/uploads/2015/12/Oliver2011Political-FactorsIStateIncarceration.pdf :
 
@@ -179,7 +179,7 @@ That said, incarceration rates nationwide continued to climb steadily for 14 yea
 
 
 #Question 3: Are there any counties driving a state's incarceration rate?
-Yes, in West Virginia there are counties 37 counties that in at least one of the years reported 0 incarcerations. This is extremely strange because West Virginia has been one of the highest ranked states by incarceration. This means that there are specific counties within the state that are driving the incarceration rate upwards. This is demonstrated by the fact that in certain counties, like Gilmer and Doddrige, the incarceration rate is almost 20% of the total population. This is even more interesting because in both of those counties in 2000, 0% of the population of those counties was incarcerated.
+Yes, in West Virginia there are counties 37 counties that reported 0 incarcerations in at least one of the years. This is extremely strange because West Virginia has been one of the highest ranked states by incarceration. This means that there are specific counties within the state that are driving the incarceration rate upwards. This is demonstrated by the fact that in certain counties, like Gilmer and Doddrige, the incarceration rate is almost 20% of the total population. This is even more interesting because in both of those counties in 2000, 0% of the population of those counties was incarcerated.
 
 In certain counties, like Crowley County, CO, 48% of the population is incarcerated. The population of Crowley is 5,000 and the size of the prison is 2,000 people. Is this because it's a small county with a huge prison and we are counting the prisoners as people living the county and not being shipped from other counties?
 
@@ -193,7 +193,7 @@ Until 2010, the senior senator on the U.S. Senate’s appropriation’s committe
 
 This graph of West Virginia's prison population shows a steady growth of ~500 more people added to the WV prison system per year. - https://wvpolicy.org/wp-content/uploads/2019/02/WVCBP_IncarcerationInfographic_FINAL.pdf
 
-The number of West Virgins incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
+The number of West Virginians incarcerated has increased five-fold in the last 30 years despite a decline in the state's population in that time. This steep increase is not due to increased crime rates but rather by policy choices made my politicians to use imprisonment as the primary response to crime.
 
 Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-fell-in-the-last-year-but-on-the-rise-again/
 
