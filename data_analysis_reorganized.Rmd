@@ -81,12 +81,25 @@ Counties with the highest incarcertain rates per 100k people in 2020:
 5. Wheeler County, GA - 31.62%
 
 States with the highest incarceration rates per 100k people in 2020:
+1. Louisiania
+2. West Virginia
+3. Mississippi
+4. Oklahoma
+5. Arizona
 
+-Top 5 states with most increased rank status:
+1. West Virginia (from 28 to 2)
+2. South Dakota (from 26 to 11)
+3. New Mexico (from 25 to 12)
+4. Indianna (from 33 to 20)
+5. Montana (from 39 to 29)
 
-
-
--Top 5 states with most change:
-
+-Top 5 states with most decreased rank status:
+1. Delaware (from 13 to 31)
+2. Maryland (from 19 to 35)
+3. California (from 15 to 30)
+4. Connecticut (from 27 to 38)
+5. South Carolina (from 9 to 18)
 
 -Interestingly, private prisons don't seem to be a driving factor in the division driving red states higher and blue states lower. Accounting for only 8% of incarceration rates in the US, private prisons are most highly concentrated in New Mexico, Montana and New Jersey: a purple, red and blue state respectively, while West Virginia doesn't have any private prisons. 
 
@@ -130,12 +143,13 @@ Over the past 20 years, Louisiana has consistently been in the top 2. In 2000, t
 Republican states have tended to increase in incarceration ranking over the last 20 years, for example Mississippi (5->3), Arkansas (12->5), Kentucky(16->9), Alabama(14->10), South Dakota (26->11), New Mexico (25->12), Indiana (33->20), Idaho (31-22). Interestingly, over time Democratic states have fallen in the rankings: Virginia (6->15), Delaware (13->31), Maryland (19->35), Connecticut (27->38), New York (35->44). 
 
 ```{r}
-state_rates %>% 
+ranked_states_rates <- state_rates %>% 
   mutate(
     change_in_rank_20 = (rank_20)-(rank_00),
     change_in_rank_10 = (rank_20)-(rank_10),
     first_change_in_rank= (rank_10)-(rank_00)
   )
+
 ```
 
 
