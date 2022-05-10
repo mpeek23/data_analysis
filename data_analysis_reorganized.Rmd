@@ -117,6 +117,54 @@ allcounty_rates<-clean_counties %>%
 allcounty_rates_table <- allcounty_rates %>%
   head(5)
 ```
+
+Here are graphical visualizations for the total incarcerated populations in each year (2000, 2010 and 2020) per state as well as graphs for the percent incarcerated per year, per state. For each of the graphs, we filtered out "bad states" that would have messed up our data or the map. Those states include Alaska,the Commonwealth of the Northern Mariana Islands,the United States Virgin Islands, Guam, American Samoa, Puerto Rico and Hawaii.
+
+```{r}
+prison_pop <- census_data
+prison_pop <- prison_pop %>% mutate(FIPS=str_pad(FIPS,5,"left","0"),ST_FIPS=substr(FIPS,1,2),COUNTY_FIPS=substr(FIPS,3,6)) %>%
+  group_by(state,ST_FIPS) %>% summarise(across(total_population_20:incarcerated_00,~sum(.x))) %>% 
+  mutate(percent_00=100*incarcerated_00/total_population_00,
+         percent_10=100*incarcerated_10/total_population_10,
+         percent_20=100*incarcerated_20/total_population_20
+         ) %>% ungroup()
+# join with the state data...
+bad_states=c("Alaska","Commonwealth of the Northern Mariana Islands","United States Virgin Islands" ,"Guam","American Samoa","Puerto Rico","Hawaii")
+states <- states() %>% filter(!NAME %in% bad_states)
+states <- states %>% inner_join(prison_pop,by=c("STATEFP" = "ST_FIPS"))
+
+
+## plot
+total_20 <- ggplot() + geom_sf(aes(fill=incarcerated_20),data = states) + theme_minimal()
+total_10 <- ggplot() + geom_sf(aes(fill=incarcerated_10),data = states) + theme_minimal()
+total_00 <- ggplot() + geom_sf(aes(fill=incarcerated_00),data = states) + theme_minimal()
+percent_20 <- ggplot() + geom_sf(aes(fill=percent_20),data = states) + theme_minimal()
+percent_10 <- ggplot() + geom_sf(aes(fill=percent_10),data = states) + theme_minimal()
+percent_00 <- ggplot() + geom_sf(aes(fill=percent_00),data = states) + theme_minimal()
+system.time(ggsave(filename = "percent00.pdf",percent_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent10.pdf",percent_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "percent20.pdf",percent_20,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_00.pdf",total_00,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_10.pdf",total_10,width = 10,height = 7,dpi=300,units = "in"))
+system.time(ggsave(filename = "total_20.pdf",total_20,width = 10,height = 7,dpi=300,units = "in"))
+```
+
+```{r}
+bad_states2=c("AK","VI","GU" ,"AS","PR","HI","MP")
+prison_geometry <- st_read("Prison_Boundaries/Prison_Boundaries.shp") %>% filter(!STATE %in% bad_states2,!is.na(STATE))
+
+prison <- ggplot() + geom_sf(data = prison_geometry) + theme_minimal()
+
+STFP <- states %>% filter(!state %in% bad_states2) %>% select(STATEFP,state) %>% pull(name=state,STATEFP) %>% enframe
+county = counties() %>% left_join(STFP,by=c("STATEFP"="value")) %>% filter(!is.na(name))
+
+#prison2 <- ggplot() + geom_sf(data = prison_geometry) + geom_sf(data = county) + theme_minimal()
+prison2 <- ggplot()+ geom_sf(data = county) + geom_sf(data = prison_geometry,color="red")  + theme_minimal()
+ggsave("prison2.pdf",prison2,width = 10,height = 7,dpi=300,units = "in")
+
+
+```
+
 #Top 5 County Incarceration Rates
   #1 Crowley County, CO
       Crowley County, Colorado has the highest incarcerated rate by county. Its total population is 5,922 and its total incarcerated population is 2,850, a rate of approximately 48%. Because the county is small and it has 4 jails/prison facilities. The two correctional facilities in the county have a total of 2,850 beds and there are two small jails. It's interesting that every bed is supposedly full in the county.
@@ -132,6 +180,30 @@ allcounty_rates_table <- allcounty_rates %>%
 
 #Question1 : How do individual state incarceration rates compare to the national average?
 There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states, omitting Alaska. Half of 49 is 24.5, which is just slightly above 22. This also tells us that there are states pulling the the national rate up because the average is above the median of the states.
+
+```{r}
+state_rates <-clean_counties %>%
+  group_by(state) %>%
+  summarise(
+    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
+    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
+    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>%
+  mutate(
+    rank_20 = min_rank(-rate_20),
+    rank_10 = min_rank(-rate_10),
+    rank_00 = min_rank(-rate_00)) %>%
+  bind_rows(rates) %>%
+  arrange(desc(rate_20))
+```
+
+Here is a histogram showing the rates of each state in 2020 and how they compare to the national average in case you prefer a more graphical view of the data. 
+
+```{r}
+state_rates %>%
+  ggplot(aes(rate_20))+ geom_histogram(bins = 20)+geom_vline(xintercept = rates$rate_20) +
+  geom_label(aes(y=8,label=state))
+
+```
 
 #Question 2: Are there any states consistently below the national average, possibly dragging it down each year? Are there any states consistently above the national average?
 Over the past 20 years, West Virginia's incarceration rate has jumped from 28th in the country to 2nd. Notably, West Virginia was narrowly a blue state in the presidential election 20 years ago and has swung red in recent elections, currently with one Republican and one moderate-centrist Democrat in the Senate who notoriously doesn't always fall in line with the Democratic party. 
@@ -183,6 +255,11 @@ Yes, in West Virginia there are counties 37 counties that reported 0 incarcerati
 
 In certain counties, like Crowley County, CO, 48% of the population is incarcerated. The population of Crowley is 5,000 and the size of the prison is 2,000 people. Is this because it's a small county with a huge prison and we are counting the prisoners as people living the county and not being shipped from other counties?
 
+```{r}
+counties_with_zero<-clean_counties %>%
+  arrange(incarcerated_20 + incarcerated_10 + incarcerated_20)
+```
+
 #Background on West Virginia:
 
 According to Prison Policy's profile on West Virginia, (https://www.prisonpolicy.org/profiles/WV.html), “West Virginia has an incarceration rate of 731 per 100,000 people (including prisons, jails, immigration detention, and juvenile justice facilities), meaning that it locks up a higher percentage of its people than any democracy on earth.”
@@ -198,6 +275,17 @@ The number of West Virginians incarcerated has increased five-fold in the last 3
 Covid in WV: https://wvpolicy.org/west-virginias-total-incarcerated-population-fell-in-the-last-year-but-on-the-rise-again/
 
 Between the beginning of March 2020 and April 15, 2020, the state’s total incarcerated population fell by nearly 13 percent as officials made efforts to prevent COVID-19 spread in jails and prisons. It wasn’t until July — four months after Governor Jim Justice declared a state of emergency — that the prison population fell by 1,000 below pre-pandemic levels and remained below that number.  At 3,831 people, the prison population on March 15, 2021 was at its lowest since 2003.
+
+Here is a graph highlighting states with the largest change in their ranking from 2000 to 2020. 
+
+```{r}
+rank_change <-states %>% 
+  mutate(twenty_year= percent_20-percent_00)
+
+ rank_map<- ggplot() + geom_sf(aes(fill=twenty_year),data = rank_change) + theme_minimal()
+ system.time(ggsave(filename = "rank_map.pdf",rank_map, width = 10,height = 7,dpi=300,units = "in"))
+ 
+```
 
 
 ```{r}
@@ -225,96 +313,8 @@ The common narrative is that private prisons are the lifeblood of the US prison 
 
 The ACLU suggests those running for federal office should pledge to use their power to close prisons once in office, which they say would be the best way to counteract the effects of the 1994 crime bill and prove to the public that you as a politician don't believe in the widely-discredited tough-on-crime policies of the past.
 
-#Other Notes
 
-
-```{r}
-state_rates <-clean_counties %>%
-  group_by(state) %>%
-  summarise(
-    rate_20 = sum(incarcerated_20)/sum(total_population_20)*100,
-    rate_10 = sum(incarcerated_10)/sum(total_population_10)*100,
-    rate_00 = sum(incarcerated_00)/sum(total_population_00)*100) %>%
-  mutate(
-    rank_20 = min_rank(-rate_20),
-    rank_10 = min_rank(-rate_10),
-    rank_00 = min_rank(-rate_00)) %>%
-  bind_rows(rates) %>%
-  arrange(desc(rate_20))
-```
-
-```{r}
-state_rates %>%
-  ggplot(aes(rate_20))+ geom_histogram(bins = 20)+geom_vline(xintercept = rates$rate_20) +
-  geom_label(aes(y=8,label=state))
-
-```
-
-
-```{r}
-counties_with_zero<-clean_counties %>%
-  arrange(incarcerated_20 + incarcerated_10 + incarcerated_20)
-```
-
-
-```{r}
-prison_pop <- census_data
-prison_pop <- prison_pop %>% mutate(FIPS=str_pad(FIPS,5,"left","0"),ST_FIPS=substr(FIPS,1,2),COUNTY_FIPS=substr(FIPS,3,6)) %>%
-  group_by(state,ST_FIPS) %>% summarise(across(total_population_20:incarcerated_00,~sum(.x))) %>% 
-  mutate(percent_00=100*incarcerated_00/total_population_00,
-         percent_10=100*incarcerated_10/total_population_10,
-         percent_20=100*incarcerated_20/total_population_20
-         ) %>% ungroup()
-# join with the state data...
-bad_states=c("Alaska","Commonwealth of the Northern Mariana Islands","United States Virgin Islands" ,"Guam","American Samoa","Puerto Rico","Hawaii")
-states <- states() %>% filter(!NAME %in% bad_states)
-states <- states %>% inner_join(prison_pop,by=c("STATEFP" = "ST_FIPS"))
-
-
-## plot
-total_20 <- ggplot() + geom_sf(aes(fill=incarcerated_20),data = states) + theme_minimal()
-total_10 <- ggplot() + geom_sf(aes(fill=incarcerated_10),data = states) + theme_minimal()
-total_00 <- ggplot() + geom_sf(aes(fill=incarcerated_00),data = states) + theme_minimal()
-percent_20 <- ggplot() + geom_sf(aes(fill=percent_20),data = states) + theme_minimal()
-percent_10 <- ggplot() + geom_sf(aes(fill=percent_10),data = states) + theme_minimal()
-percent_00 <- ggplot() + geom_sf(aes(fill=percent_00),data = states) + theme_minimal()
-system.time(ggsave(filename = "percent00.pdf",percent_00,width = 10,height = 7,dpi=300,units = "in"))
-system.time(ggsave(filename = "percent10.pdf",percent_10,width = 10,height = 7,dpi=300,units = "in"))
-system.time(ggsave(filename = "percent20.pdf",percent_20,width = 10,height = 7,dpi=300,units = "in"))
-system.time(ggsave(filename = "total_00.pdf",total_00,width = 10,height = 7,dpi=300,units = "in"))
-system.time(ggsave(filename = "total_10.pdf",total_10,width = 10,height = 7,dpi=300,units = "in"))
-system.time(ggsave(filename = "total_20.pdf",total_20,width = 10,height = 7,dpi=300,units = "in"))
-```
-```{r}
-rank_change <-states %>% 
-  mutate(twenty_year= percent_20-percent_00)
-
- rank_map<- ggplot() + geom_sf(aes(fill=twenty_year),data = rank_change) + theme_minimal()
- system.time(ggsave(filename = "rank_map.pdf",rank_map, width = 10,height = 7,dpi=300,units = "in"))
- 
-```
-
-```{r}
-bad_states2=c("AK","VI","GU" ,"AS","PR","HI","MP")
-prison_geometry <- st_read("Prison_Boundaries/Prison_Boundaries.shp") %>% filter(!STATE %in% bad_states2,!is.na(STATE))
-
-prison <- ggplot() + geom_sf(data = prison_geometry) + theme_minimal()
-
-STFP <- states %>% filter(!state %in% bad_states2) %>% select(STATEFP,state) %>% pull(name=state,STATEFP) %>% enframe
-county = counties() %>% left_join(STFP,by=c("STATEFP"="value")) %>% filter(!is.na(name))
-
-#prison2 <- ggplot() + geom_sf(data = prison_geometry) + geom_sf(data = county) + theme_minimal()
-prison2 <- ggplot()+ geom_sf(data = county) + geom_sf(data = prison_geometry,color="red")  + theme_minimal()
-ggsave("prison2.pdf",prison2,width = 10,height = 7,dpi=300,units = "in")
-
-
-```
-
-
-
-
-
-#Analysis of the data
+#Initial Analysis of the Data
 The data has 3,211 rows and 9 columns. Each county for every state has the total population and incarcerated population for 2020, 2010 and 2000, and its FIPS code. One issue we may run into is if the information is not accurate. For example, Nantucket County MA, never has anyone incarcerated over the 20 years we are looking at. I find that suspicious. Not only that, a lot of counties have the same issue. In addition, on our data we have 3211 rows describing counties. In the US there are about 3006 counties. The reason we have more is because our data includes Parishes (which are counties in LA), boroughs, some big cities, Puerto Rico's municipios. I sorted and then saved everything that is not a county in the dataframe not_counties.
 
 ```{r}
