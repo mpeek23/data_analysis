@@ -177,6 +177,7 @@ ggsave("prison2.pdf",prison2,width = 10,height = 7,dpi=300,units = "in")
   #5 Wheeler County, GA
      Wheeler County, Georgia has a total population of 7,741 and an incarcerated population of 2,362, with a rate of about 31% of the population incarcerated. Wheeler County is one of the poorest counties in the nation and is home to the Wheeler County Correctional Center, which has occupancy for over 3,000 inmates.
 
+Here is a choropleth made in Datawrapper to show how many incarcerated people there are per county in the United States. (https://datawrapper.dwcdn.net/nlxqz/3/)
 
 #Question1 : How do individual state incarceration rates compare to the national average?
 There are 22 states that are above the national average incarceration rates, which makes sense because it is the states that make up the national average and we're looking at 49 states, omitting Alaska. Half of 49 is 24.5, which is just slightly above 22. This also tells us that there are states pulling the the national rate up because the average is above the median of the states.
